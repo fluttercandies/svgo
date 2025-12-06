@@ -1,0 +1,78 @@
+# See https://dart.dev/guides/libraries/private-files for more information about this file.
+
+# Directories
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+
+# Files
+.pubspec_overrides.yaml
+pubspec_overrides.yaml
+
+# IDE and editor files
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+.DS_Store
+Thumbs.db
+
+# Melos related
+.melos/
+
+# Logs
+*.log
+logs/
+
+# Coverage
+coverage/
+lcov.info
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# OS generated files
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# Node.js (if any for comparison)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+out/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Debug files
+*.debug
+debug_*.mjs
+debug_*.dart
+
+# Test artifacts
+.test_cache/
+.dart_tool_test/
+
+# Documentation build
+docs/build/
+site/
+
+# Backup files
+*.bak
+*.backup

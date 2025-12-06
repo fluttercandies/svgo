@@ -2,11 +2,20 @@
   <img src="https://raw.githubusercontent.com/fluttercandies/svgo-dart/main/svgo.png" alt="SVGO Logo" width="160" height="160">
 </p>
 
+<h1 align="center">SVGO CLI</h1>
+
 <p align="center">
-  <h1>SVGO CLI</h1>
+  <a href="README.zh.md">🇨🇳 中文</a>
 </p>
 
-Command-line interface for [SVGO](https://pub.dev/packages/svgo) - the SVG optimizer.
+<p align="center">
+  <a href="https://pub.dev/packages/svgo_cli"><img src="https://img.shields.io/pub/v/svgo_cli.svg" alt="pub package"></a>
+  <a href="https://github.com/fluttercandies/svgo-dart/blob/main/LICENSE"><img src="https://img.shields.io/github/license/fluttercandies/svgo-dart" alt="license"></a>
+</p>
+
+<p align="center">
+  Command-line interface for <a href="https://pub.dev/packages/svgo">SVGO</a> - the SVG optimizer.
+</p>
 
 ## Installation
 
@@ -99,11 +108,3 @@ The CLI uses the default preset (`preset-default`) with safe optimizations. Futu
 ## License
 
 MIT License - Copyright (c) 2025 iota9star
-
----
-
----
-
-## 中文文档
-
-完整的中文文档请查看 [README.zh.md](README.zh.md)。

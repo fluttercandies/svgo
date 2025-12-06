@@ -1,12 +1,20 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/fluttercandies/svgo-dart/main/svgo.png" alt="SVGO Logo" width="160" height="160">
+  <a href="https://pub.dev/packages/svgo_cli"><img src="https://img.shields.io/pub/v/svgo_cli.svg" alt="pub package"></a>
+  <a href="https://github.com/fluttercandies/svgo-dart/blob/main/LICENSE"><img src="https://img.shields.io/github/license/fluttercandies/svgo-dart" alt="license"></a>
 </p>
 
 <p align="center">
-  <h1>SVGO CLI</h1>
+  <a href="README.md">🇺🇸 English</a>
 </p>
 
-[SVGO](https://pub.dev/packages/svgo) 的命令行界面 - SVG 优化器。
+<p align="center">
+  <a href="https://pub.dev/packages/svgo_cli"><img src="https://img.shields.io/pub/v/svgo_cli.svg" alt="pub package"></a>
+  <a href="https://github.com/fluttercandies/svgo-dart/blob/main/LICENSE"><img src="https://img.shields.io/github/license/fluttercandies/svgo-dart" alt="license"></a>
+</p>
+
+<p align="center">
+<a href="https://pub.dev/packages/svgo">SVGO</a> 的命令行界面 - SVG 优化器。
+</p>
 
 ## 安装
 

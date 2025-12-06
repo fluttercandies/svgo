@@ -2,13 +2,21 @@
   <img src="https://raw.githubusercontent.com/fluttercandies/svgo-dart/main/svgo.png" alt="SVGO Logo" width="160" height="160">
 </p>
 
+<h1 align="center">SVGO</h1>
+
 <p align="center">
-  <h1>SVGO</h1>
+  <a href="README.md">🇺🇸 English</a>
 </p>
 
-一个用于优化 SVG 文件的 Dart 库。
+<p align="center">
+  <a href="https://pub.dev/packages/svgo"><img src="https://img.shields.io/pub/v/svgo.svg" alt="pub package"></a>
+  <a href="https://github.com/fluttercandies/svgo-dart/blob/main/LICENSE"><img src="https://img.shields.io/github/license/fluttercandies/svgo-dart" alt="license"></a>
+</p>
 
+
+<p align="center">
 一个专为 Dart 设计的综合 SVG 优化库，灵感来源于生态系统中经过验证的优化技术。
+</p>
 
 ## 特性
 
@@ -54,6 +62,7 @@ void main() {
 
   final result = optimize(input);
   print(result.data);
+  // 输出: <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="red"/></svg>
 }
 ```
 
@@ -72,7 +81,7 @@ final result = optimize(input, SvgoConfig(
 ```dart
 final result = optimize(input, SvgoConfig(
   plugins: [
-    'removeComments',     // 移除注释
+    'removeComments',
     {
       'name': 'cleanupNumericValues',
       'params': {'floatPrecision': 2},
@@ -93,7 +102,7 @@ final result = optimize(input, SvgoConfig(
 ### 操作 AST
 
 ```dart
-// 解析 SVG 为 AST
+// 将 SVG 解析为 AST
 final ast = parseSvg(svgString);
 
 // 遍历和修改 AST
@@ -103,7 +112,7 @@ for (final child in ast.children) {
   }
 }
 
-// 将 AST 转回字符串
+// 将 AST 转换回字符串
 final output = stringifySvg(ast);
 ```
 
@@ -128,7 +137,7 @@ final pathData = parsePathData('M10 20 L30 40 Z');
 // 转换为绝对坐标
 final absolute = convertRelativeToAbsolute(pathData);
 
-// 转回字符串
+// 转换回字符串
 final pathString = stringifyPathData(absolute);
 ```
 
@@ -137,7 +146,7 @@ final pathString = stringifyPathData(absolute);
 ### 清理插件
 
 | 插件 | 描述 |
-|------|------|
+|--------|------|
 | `cleanupAttrs` | 从属性中移除换行符和尾随空格 |
 | `cleanupEnableBackground` | 移除或修复已废弃的 enable-background 属性 |
 | `cleanupIds` | 移除或压缩未使用的 ID |
@@ -147,7 +156,7 @@ final pathString = stringifyPathData(absolute);
 ### 移除插件
 
 | 插件 | 描述 |
-|------|------|
+|--------|------|
 | `removeAttrs` | 移除指定属性 |
 | `removeAttributesBySelector` | 通过 CSS 选择器移除属性 |
 | `removeComments` | 移除 XML 注释 |
@@ -180,7 +189,7 @@ final pathString = stringifyPathData(absolute);
 ### 转换插件
 
 | 插件 | 描述 |
-|------|------|
+|--------|------|
 | `convertColors` | 将颜色转换为更短的格式 |
 | `convertEllipseToCircle` | 在可能时将椭圆转换为圆 |
 | `convertOneStopGradients` | 将单停止点渐变转换为纯色 |
@@ -192,7 +201,7 @@ final pathString = stringifyPathData(absolute);
 ### 合并和移动插件
 
 | 插件 | 描述 |
-|------|------|
+|--------|------|
 | `collapseGroups` | 折叠无用的组 |
 | `mergePaths` | 合并相邻的路径元素 |
 | `mergeStyles` | 合并多个样式元素 |
@@ -202,21 +211,21 @@ final pathString = stringifyPathData(absolute);
 ### 排序插件
 
 | 插件 | 描述 |
-|------|------|
+|--------|------|
 | `sortAttrs` | 排序属性以获得更好的压缩 |
 | `sortDefsChildren` | 排序 defs 子元素以获得更好的压缩 |
 
 ### 样式插件
 
 | 插件 | 描述 |
-|------|------|
+|--------|------|
 | `inlineStyles` | 将 CSS 样式内联到元素 |
 | `minifyStyles` | 压缩样式元素中的 CSS |
 
 ### 其他插件
 
 | 插件 | 描述 |
-|------|------|
+|--------|------|
 | `addAttributesToSVGElement` | 向 SVG 元素添加属性 |
 | `addClassesToSVGElement` | 向 SVG 元素添加类 |
 | `applyTransforms` | 将变换应用到路径数据 |
@@ -310,3 +319,9 @@ final result = optimize(input, SvgoConfig(
 ## 许可证
 
 MIT 许可证 - 版权所有 (c) 2025 iota9star
+
+详见 [LICENSE](LICENSE)。
+
+## 致谢
+
+感谢 [SVGO](https://github.com/svg/svgo) 提供的灵感和参考。

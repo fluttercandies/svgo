@@ -2,12 +2,10 @@
   <img src="svgo.png" alt="SVGO Logo" width="160" height="160">
 </p>
 
-<p align="center">
-  <h1>SVGO Dart</h1>
-</p>
+<h1 align="center">SVGO Dart</h1>
 
 <p align="center">
-  A powerful SVG optimization tool for Dart and Flutter.
+  <a href="README.zh.md">🇨🇳 中文文档</a>
 </p>
 
 <p align="center">
@@ -15,7 +13,9 @@
   <a href="https://github.com/fluttercandies/svgo-dart/blob/main/LICENSE"><img src="https://img.shields.io/github/license/fluttercandies/svgo-dart" alt="license"></a>
 </p>
 
+<p align="center">
 A comprehensive SVG optimization library for the Dart/Flutter ecosystem, providing powerful tools to reduce file sizes while preserving visual quality. Inspired by proven optimization techniques used in popular SVG tools.
+</p>
 
 ## Packages
 
@@ -195,11 +195,3 @@ See [LICENSE](LICENSE) for details.
 ## Acknowledgments
 
 Thanks to [SVGO](https://github.com/svg/svgo) for inspiration and reference.
-
----
-
----
-
-## 中文文档
-
-完整的中文文档请查看 [README.zh.md](README.zh.md)。

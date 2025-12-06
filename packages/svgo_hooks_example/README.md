@@ -1,4 +1,21 @@
-# SVGO Hooks Example
+<p align="center">
+  <img src="https://raw.githubusercontent.com/fluttercandies/svgo-dart/main/svgo.png" alt="SVGO Logo" width="160" height="160">
+</p>
+
+<h1 align="center">SVGO Hooks Example</h1>
+
+<p align="center">
+  <a href="README.zh.md">🇨🇳 中文</a>
+</p>
+
+<p align="center">
+  <a href="https://pub.dev/packages/svgo_hooks_example"><img src="https://img.shields.io/pub/v/svgo_hooks_example.svg" alt="pub package"></a>
+  <a href="https://github.com/fluttercandies/svgo-dart/blob/main/LICENSE"><img src="https://img.shields.io/github/license/fluttercandies/svgo-dart" alt="license"></a>
+</p>
+
+<p align="center">
+  Demonstration project for automatic SVG optimization using Dart Hooks.
+</p>
 
 > **Version note**: Support for build hooks was introduced in Dart 3.10.
 
@@ -233,4 +250,4 @@ A: Some SVGs are already highly optimized, try enabling `multipass: true`
 
 ## License
 
-This project is licensed under BSD-3-Clause License.
+MIT License - Copyright (c) 2025 iota9star
