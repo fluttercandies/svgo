@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="-100 -100 200 200">
+    <rect x="-100" y="-100" width="200" height="200" fill="#CD803D" />
+
+    <circle r="55" stroke="#FCCE7B" stroke-width="10" fill="white" />
+    <circle
+        r="45"
+        stroke="#B6705F"
+        stroke-width="6"
+        stroke-dasharray="6 17.56194490192345"
+        stroke-dashoffset="3"
+        fill="none"
+    />
+    <g stroke="#5f4c6c" stroke-linecap="round">
+        <line
+            id="hours"
+            y2="-20"
+            stroke-width="8"
+            transform="rotate(0)"
+        />
+        <line
+            id="minutes"
+            y2="-35"
+            stroke-width="6"
+            transform="rotate(0)"
+        />
+    </g>
+</svg>

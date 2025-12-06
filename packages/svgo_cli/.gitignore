@@ -1,0 +1,53 @@
+# Dart related
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+pubspec.lock
+
+# IDE and editor files
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Coverage
+coverage/
+lcov.info
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Test artifacts
+.test_cache/
+.dart_tool_test/
+
+# Package manager files
+pubspec_overrides.yaml
+
+# Debug files
+*.debug
+debug_*.dart
+
+# Backup files
+*.bak
+*.backup

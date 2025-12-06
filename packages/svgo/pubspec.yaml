@@ -1,0 +1,26 @@
+name: svgo
+description: A Dart library for optimizing SVG files. Port of SVGO (Node.js SVG Optimizer).
+version: 1.0.0
+repository: https://github.com/fluttercandies/svgo-dart
+issue_tracker: https://github.com/fluttercandies/svgo-dart/issues
+homepage: https://github.com/fluttercandies/svgo-dart
+
+environment:
+  sdk: ^3.0.0
+
+dependencies:
+  xml: ^6.6.1
+  csslib: ^1.0.2
+  path: ^1.9.1
+  collection: ^1.19.1
+
+dev_dependencies:
+  test: ^1.25.0
+  lints: ^4.0.0
+
+topics:
+  - svg
+  - optimization
+  - parser
+  - xml
+  - graphics

@@ -1,0 +1,17 @@
+Add multiple attributes without value
+
+===
+
+<svg xmlns="http://www.w3.org/2000/svg">
+    test
+</svg>
+
+@@@
+
+<svg xmlns="http://www.w3.org/2000/svg" data-icon className={classes}>
+    test
+</svg>
+
+@@@
+
+{"attributes":["data-icon","className={classes}"]}

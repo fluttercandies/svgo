@@ -1,0 +1,19 @@
+Override group attributes with children attributes
+
+===
+
+<svg>
+  <g fill="red">
+    <rect fill="blue" />
+    <circle fill="blue" />
+  </g>
+</svg>
+
+@@@
+
+<svg>
+    <g fill="blue">
+        <rect/>
+        <circle/>
+    </g>
+</svg>

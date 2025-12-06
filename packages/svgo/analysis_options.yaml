@@ -1,0 +1,13 @@
+include: package:lints/recommended.yaml
+
+analyzer:
+  errors:
+    todo: ignore
+  exclude:
+    - test/debug_*.dart
+    - test/*_debug.dart
+    - test/*_debug*.dart
+
+linter:
+  rules:
+    constant_identifier_names: false

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="-100 -100 200 200">
+    <defs>
+        <g id="tree">
+            <polygon points="-10,0 10,0 0 -50" fill="#38755b" />
+            <line
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="10"
+                stroke="#778074"
+                stroke-width="2"
+            />
+        </g>
+
+        <circle id="big-flake" cx="0" cy="0" r="5" fill="white" />
+        <circle id="small-flake" cx="0" cy="0" r="3" fill="white" />
+    </defs>
+
+    <rect x="-100" y="-100" width="200" height="200" fill="#F1DBC3" />
+    <circle cx="0" cy="380" r="350" fill="#F8F4E8" />
+
+    <use href="#tree" x="-30" y="25" transform="scale(2)" />
+    <use href="#tree" x="-20" y="40" transform="scale(1.2)" />
+    <use href="#tree" x="40" y="40" />
+    <use href="#tree" x="50" y="30" transform="scale(1.5)" />
+
+    <use href="#big-flake" x="0" y="0" class="flake fast" />
+    <use href="#big-flake" x="-50" y="-20" class="flake fast small" />
+    <use href="#big-flake" x="30" y="-40" class="flake fast" />
+    <use href="#big-flake" x="50" y="-20" class="flake fast small" />
+    <use href="#big-flake" x="30" y="50" class="flake slow" />
+    <use href="#big-flake" x="-70" y="-80" class="flake slow small" />
+    <use href="#big-flake" x="30" y="50" class="flake slow" />
+    <use href="#big-flake" x="90" y="-80" class="flake slow small" />
+    <use href="#small-flake" x="10" y="-50" class="flake slow" />
+    <use href="#small-flake" x="-50" y="-60" class="flake slow small" />
+    <use href="#small-flake" x="30" y="70" class="flake slow" />
+    <use href="#small-flake" x="10" y="-80" class="flake slow small" />
+</svg>

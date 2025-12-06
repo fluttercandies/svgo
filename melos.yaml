@@ -1,0 +1,53 @@
+name: svgo
+repository: https://github.com/fluttercandies/svgo-dart
+
+packages:
+  - packages/**
+
+command:
+  version:
+    branch: main
+    message: "chore: release %v"
+    includeCommitId: false
+    workspaceChangelog: true
+
+  bootstrap:
+    usePubspecOverrides: true
+    runPubGetInParallel: true
+
+  clean:
+    hooks:
+      post: melos exec -- "rm -rf .dart_tool build coverage"
+
+scripts:
+  analyze:
+    description: Run static analysis
+    run: melos exec -- dart analyze --fatal-infos
+
+  format:
+    description: Format all Dart files
+    run: melos exec -- dart format .
+
+  format:check:
+    description: Check formatting
+    run: melos exec -- dart format --output=none --set-exit-if-changed .
+
+  test:
+    description: Run all tests
+    run: melos exec -- dart test --reporter=expanded
+    packageFilters:
+      dirExists: test
+
+  test:coverage:
+    description: Run tests with coverage
+    run: melos exec -- dart test --coverage=coverage
+    packageFilters:
+      dirExists: test
+
+  publish:
+    description: Publish packages
+    run: melos publish --no-dry-run
+
+  publish:dry:
+    description: Dry run publish
+    run: melos publish

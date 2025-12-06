@@ -1,0 +1,79 @@
+# Dart related
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+pubspec.lock
+
+# IDE and editor files
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+.DS_Store
+Thumbs.db
+
+# Melos related
+.melos/
+
+# Logs
+*.log
+logs/
+
+# Coverage
+coverage/
+lcov.info
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Node.js (if any for comparison)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+build/
+out/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Debug files
+*.debug
+debug_*.mjs
+debug_*.dart
+
+# Test artifacts
+.test_cache/
+.dart_tool_test/
+
+# Package manager files
+pubspec_overrides.yaml
+
+# Documentation build
+docs/build/
+site/
+
+# Backup files
+*.bak
+*.backup

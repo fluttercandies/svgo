@@ -1,0 +1,9 @@
+Sort derived attributes like fill and fill-opacity
+
+===
+
+<svg a="" fill-opacity="" stroke="" fill="" stroke-opacity=""></svg>
+
+@@@
+
+<svg fill="" fill-opacity="" stroke="" stroke-opacity="" a=""/>
