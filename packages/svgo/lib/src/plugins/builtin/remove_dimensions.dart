@@ -5,16 +5,17 @@ import '../../xast/xast.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
-const removeDimensions = Plugin(
+const removeDimensions = Plugin<EmptyParams>(
   name: 'removeDimensions',
   description:
       'removes width and height in presence of viewBox (opposite to removeViewBox)',
+  defaultParams: EmptyParams(),
   fn: _removeDimensionsFn,
 );
 
 Visitor? _removeDimensionsFn(
   XastRoot ast,
-  PluginParams params,
+  EmptyParams params,
   SvgoInfo info,
 ) {
   return Visitor(

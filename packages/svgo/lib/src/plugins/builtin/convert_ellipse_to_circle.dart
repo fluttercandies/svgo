@@ -8,15 +8,16 @@ import '../../xast/xast.dart';
 import '../plugin.dart';
 
 /// Converts non-eccentric `<ellipse>` elements to `<circle>` elements.
-const convertEllipseToCircle = Plugin(
+const convertEllipseToCircle = Plugin<EmptyParams>(
   name: 'convertEllipseToCircle',
   description: 'converts non-eccentric <ellipse>s to <circle>s',
+  defaultParams: EmptyParams(),
   fn: _convertEllipseToCircleFn,
 );
 
 Visitor? _convertEllipseToCircleFn(
   XastRoot ast,
-  PluginParams params,
+  EmptyParams params,
   SvgoInfo info,
 ) {
   return Visitor(

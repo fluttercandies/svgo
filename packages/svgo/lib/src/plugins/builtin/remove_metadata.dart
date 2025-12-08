@@ -30,13 +30,14 @@ import '../plugin.dart';
 ///   <rect/>
 /// </svg>
 /// ```
-const removeMetadata = Plugin(
+const removeMetadata = Plugin<EmptyParams>(
   name: 'removeMetadata',
   description: 'removes <metadata>',
+  defaultParams: EmptyParams(),
   fn: _removeMetadataFn,
 );
 
-Visitor? _removeMetadataFn(XastRoot ast, PluginParams params, SvgoInfo info) {
+Visitor? _removeMetadataFn(XastRoot ast, EmptyParams params, SvgoInfo info) {
   return Visitor(
     element: VisitorNode(
       enter: (node, parentNode) {

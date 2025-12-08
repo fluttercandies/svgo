@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-12-08
+
+### Changed
+
+- **Breaking Change**: Migrated to fully type-safe plugin API
+  - All plugins now use generic `Plugin<P extends PluginParams>` type
+  - Each plugin with parameters has a dedicated params class
+  - Use `plugin.withParams(CustomParams(...))` to customize plugins
+- Updated all packages to version 1.1.0
+
+For detailed migration guide, see [packages/svgo/CHANGELOG.md](packages/svgo/CHANGELOG.md)
+
 ## [1.0.0] - 2025-12-06
 
 ### Added

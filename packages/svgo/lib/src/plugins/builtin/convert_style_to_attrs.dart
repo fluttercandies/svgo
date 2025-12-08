@@ -8,6 +8,16 @@ import '../../xast/xast.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
+/// Parameters for the convertStyleToAttrs plugin.
+class ConvertStyleToAttrsParams extends PluginParams {
+  /// Keep !important declarations in style. Default: false
+  final bool keepImportant;
+
+  const ConvertStyleToAttrsParams({
+    this.keepImportant = false,
+  });
+}
+
 /// Converts inline style declarations to attributes.
 ///
 /// This plugin converts CSS properties in the `style` attribute to
@@ -30,15 +40,10 @@ import '../plugin.dart';
 /// <!-- After -->
 /// <g fill="#000" color="#fff" style="-webkit-blah: blah">
 /// ```
-///
-/// Parameters:
-/// - `keepImportant`: Keep !important declarations in style (default: false)
-const convertStyleToAttrs = Plugin(
+const convertStyleToAttrs = Plugin<ConvertStyleToAttrsParams>(
   name: 'convertStyleToAttrs',
   description: 'converts style to attributes',
-  params: {
-    'keepImportant': false,
-  },
+  defaultParams: ConvertStyleToAttrsParams(),
   fn: _convertStyleToAttrsFn,
 );
 
@@ -49,8 +54,8 @@ final _regDeclarationBlock = RegExp(
 );
 
 Visitor? _convertStyleToAttrsFn(
-    XastRoot ast, PluginParams params, SvgoInfo info) {
-  final keepImportant = params['keepImportant'] as bool? ?? false;
+    XastRoot ast, ConvertStyleToAttrsParams params, SvgoInfo info) {
+  final keepImportant = params.keepImportant;
 
   return Visitor(
     element: VisitorNode(

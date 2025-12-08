@@ -10,6 +10,29 @@ import '../../xast/xast_utils.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
+/// Parameters for the removeComments plugin.
+class RemoveCommentsParams extends PluginParams {
+  /// List of regex patterns. Comments matching any pattern are preserved.
+  /// Default: preserves copyright/license comments starting with '!'.
+  /// Set to empty list to remove all comments.
+  final List<RegExp> preservePatterns;
+
+  const RemoveCommentsParams({
+    this.preservePatterns = const [],
+  });
+
+  /// Creates params that preserve copyright/license comments (starting with '!').
+  factory RemoveCommentsParams.preserveCopyright() {
+    return RemoveCommentsParams(preservePatterns: [RegExp(r'^!')]);
+  }
+
+  /// Creates params that remove all comments.
+  const RemoveCommentsParams.removeAll() : preservePatterns = const [];
+}
+
+/// Default preserve pattern for copyright comments.
+final _defaultPreservePattern = RegExp(r'^!');
+
 /// Removes comments.
 ///
 /// Example input:
@@ -22,35 +45,25 @@ import '../plugin.dart';
 /// ```xml
 /// <svg>...</svg>
 /// ```
-///
-/// Parameters:
-/// - `preservePatterns`: List of regex patterns. Comments matching any pattern
-///   are preserved. Default: `[r'^!']` (preserves copyright/license comments).
-///   Set to `null` or empty list to remove all comments.
-const removeComments = Plugin(
+final removeComments = Plugin<RemoveCommentsParams>(
   name: 'removeComments',
   description: 'removes comments',
-  params: {
-    'preservePatterns': [r'^!'],
-  },
+  defaultParams:
+      RemoveCommentsParams(preservePatterns: [_defaultPreservePattern]),
   fn: _removeCommentsFn,
 );
 
-Visitor? _removeCommentsFn(XastRoot ast, PluginParams params, SvgoInfo info) {
-  final preservePatterns = params['preservePatterns'];
-
-  List<RegExp>? patterns;
-  if (preservePatterns != null && preservePatterns is List) {
-    patterns = preservePatterns.map((p) {
-      if (p is RegExp) return p;
-      return RegExp(p.toString());
-    }).toList();
-  }
+Visitor? _removeCommentsFn(
+  XastRoot ast,
+  RemoveCommentsParams params,
+  SvgoInfo info,
+) {
+  final patterns = params.preservePatterns;
 
   return Visitor(
     comment: VisitorNode(
       enter: (node, parentNode) {
-        if (patterns != null && patterns.isNotEmpty) {
+        if (patterns.isNotEmpty) {
           final matches =
               patterns.any((pattern) => pattern.hasMatch(node.value));
           if (matches) return null;

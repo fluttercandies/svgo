@@ -15,7 +15,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['cleanupIds'],
+          plugins: [cleanupIds],
         ),
       );
       // IDs should be preserved in defs-only SVGs
@@ -35,7 +35,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['cleanupIds'],
+          plugins: [cleanupIds],
         ),
       );
       // ID should be minified
@@ -57,7 +57,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['cleanupIds'],
+          plugins: [cleanupIds],
         ),
       );
       expect(result.data.contains('symbol-one'), isTrue);
@@ -78,7 +78,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['cleanupIds'],
+          plugins: [cleanupIds],
         ),
       );
       // Style elements with content cause deoptimization
@@ -93,7 +93,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['cleanupIds'],
+          plugins: [cleanupIds],
         ),
       );
       expect(result.data.contains('unusedId'), isFalse);
@@ -109,12 +109,9 @@ void main() {
         ''',
         SvgoConfig(
           plugins: [
-            {
-              'name': 'cleanupIds',
-              'params': {
-                'preservePrefixes': ['icon-']
-              },
-            },
+            cleanupIds.withParams(
+              CleanupIdsParams(preservePrefixes: ['icon-']),
+            ),
           ],
         ),
       );
@@ -135,7 +132,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['cleanupIds'],
+          plugins: [cleanupIds],
         ),
       );
       // Should preserve ID since it's a defs-only library

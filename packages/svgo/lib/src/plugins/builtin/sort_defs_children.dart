@@ -35,13 +35,14 @@ import '../plugin.dart';
 ///   <linearGradient id="b"/>
 /// </defs>
 /// ```
-const sortDefsChildren = Plugin(
+const sortDefsChildren = Plugin<EmptyParams>(
   name: 'sortDefsChildren',
   description: 'Sorts children of <defs> to improve compression',
+  defaultParams: EmptyParams(),
   fn: _sortDefsChildrenFn,
 );
 
-Visitor? _sortDefsChildrenFn(XastRoot ast, PluginParams params, SvgoInfo info) {
+Visitor? _sortDefsChildrenFn(XastRoot ast, EmptyParams params, SvgoInfo info) {
   return Visitor(
     element: VisitorNode(
       enter: (node, parentNode) {

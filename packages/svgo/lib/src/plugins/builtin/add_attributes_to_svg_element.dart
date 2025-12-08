@@ -5,22 +5,31 @@ import '../../xast/xast.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
-const addAttributesToSVGElement = Plugin(
+/// Parameters for the addAttributesToSVGElement plugin.
+class AddAttributesToSVGElementParams extends PluginParams {
+  /// Attributes to add to the SVG element.
+  final List<Object> attributes;
+
+  const AddAttributesToSVGElementParams({
+    this.attributes = const [],
+  });
+}
+
+const addAttributesToSVGElement = Plugin<AddAttributesToSVGElementParams>(
   name: 'addAttributesToSVGElement',
   description: 'adds attributes to an outer <svg> element',
-  params: {},
+  defaultParams: AddAttributesToSVGElementParams(),
   fn: _addAttributesToSVGElementFn,
 );
 
 Visitor? _addAttributesToSVGElementFn(
   XastRoot ast,
-  PluginParams params,
+  AddAttributesToSVGElementParams params,
   SvgoInfo info,
 ) {
-  final attributes = params['attributes'] as List? ??
-      (params['attribute'] != null ? [params['attribute']] : null);
+  final attributes = params.attributes;
 
-  if (attributes == null || attributes.isEmpty) {
+  if (attributes.isEmpty) {
     return null;
   }
 

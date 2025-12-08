@@ -19,11 +19,11 @@ A comprehensive SVG optimization library for the Dart/Flutter ecosystem, providi
 
 ## Packages
 
-| Package | Description | pub.dev |
-|---------|-------------|---------|
-| [svgo](packages/svgo) | Core SVGO library | [![pub package](https://img.shields.io/pub/v/svgo.svg)](https://pub.dev/packages/svgo) |
-| [svgo_cli](packages/svgo_cli) | Command-line interface | [![pub package](https://img.shields.io/pub/v/svgo_cli.svg)](https://pub.dev/packages/svgo_cli) |
-| [svgo_hooks_example](packages/svgo_hooks_example) | Build hooks example | [![pub package](https://img.shields.io/pub/v/svgo_hooks_example.svg)](https://pub.dev/packages/svgo_hooks_example) |
+| Package                                           | Description            | pub.dev                                                                                        |
+|---------------------------------------------------|------------------------|------------------------------------------------------------------------------------------------|
+| [svgo](packages/svgo)                             | Core SVGO library      | [![pub package](https://img.shields.io/pub/v/svgo.svg)](https://pub.dev/packages/svgo)         |
+| [svgo_cli](packages/svgo_cli)                     | Command-line interface | [![pub package](https://img.shields.io/pub/v/svgo_cli.svg)](https://pub.dev/packages/svgo_cli) |
+| [svgo_hooks_example](packages/svgo_hooks_example) | Build hooks example    |                                                                                                |
 
 ## Features
 

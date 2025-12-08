@@ -12,27 +12,23 @@ void main() async {
     return;
   }
 
-  // Configure SVGO optimization options
+  // Configure SVGO optimization options using type-safe plugin API
   final svgoConfig = SvgoConfig(
     plugins: [
-      'removeComments',
-      'removeMetadata',
-      'removeEditorsNSData',
-      'cleanupAttrs',
-      'mergeStyles',
-      'inlineStyles',
-      'minifyStyles',
-      'convertColors',
-      'removeEmptyAttrs',
-      'removeEmptyContainers',
-      'removeHiddenElems',
-      'cleanupNumericValues',
-      'convertShapeToPath',
-      'collapseGroups',
-      {
-        'name': 'cleanupNumericValues',
-        'params': {'floatPrecision': 2},
-      },
+      removeComments,
+      removeMetadata,
+      removeEditorsNSData,
+      cleanupAttrs,
+      mergeStyles,
+      inlineStyles,
+      minifyStyles,
+      convertColors,
+      removeEmptyAttrs,
+      removeEmptyContainers,
+      removeHiddenElems,
+      cleanupNumericValues,
+      convertShapeToPath,
+      collapseGroups,
     ],
     multipass: true,
   );

@@ -7,6 +7,28 @@ import '../../xast/xast.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
+/// Parameters for the cleanupListOfValues plugin.
+class CleanupListOfValuesParams extends PluginParams {
+  /// Number of decimal places. Default: 3
+  final int floatPrecision;
+
+  /// Remove leading zeros. Default: true
+  final bool leadingZero;
+
+  /// Remove default 'px' units. Default: true
+  final bool defaultPx;
+
+  /// Convert absolute units to pixels. Default: true
+  final bool convertToPx;
+
+  const CleanupListOfValuesParams({
+    this.floatPrecision = 3,
+    this.leadingZero = true,
+    this.defaultPx = true,
+    this.convertToPx = true,
+  });
+}
+
 /// Rounds list of values to the fixed precision.
 ///
 /// This plugin optimizes numeric values in list-type attributes
@@ -22,21 +44,10 @@ import '../plugin.dart';
 /// <svg viewBox="0 0 200.284 200.284">
 /// <polygon points="208.251 77.131 223.069"/>
 /// ```
-///
-/// Parameters:
-/// - `floatPrecision`: Number of decimal places (default: 3)
-/// - `leadingZero`: Remove leading zeros (default: true)
-/// - `defaultPx`: Remove default 'px' units (default: true)
-/// - `convertToPx`: Convert absolute units to pixels (default: true)
-const cleanupListOfValues = Plugin(
+const cleanupListOfValues = Plugin<CleanupListOfValuesParams>(
   name: 'cleanupListOfValues',
   description: 'rounds list of values to the fixed precision',
-  params: {
-    'floatPrecision': 3,
-    'leadingZero': true,
-    'defaultPx': true,
-    'convertToPx': true,
-  },
+  defaultParams: CleanupListOfValuesParams(),
   fn: _cleanupListOfValuesFn,
 );
 
@@ -54,11 +65,11 @@ const _absoluteLengths = <String, double>{
 };
 
 Visitor? _cleanupListOfValuesFn(
-    XastRoot ast, PluginParams params, SvgoInfo info) {
-  final floatPrecision = (params['floatPrecision'] as num?)?.toInt() ?? 3;
-  final leadingZero = params['leadingZero'] as bool? ?? true;
-  final defaultPx = params['defaultPx'] as bool? ?? true;
-  final convertToPx = params['convertToPx'] as bool? ?? true;
+    XastRoot ast, CleanupListOfValuesParams params, SvgoInfo info) {
+  final floatPrecision = params.floatPrecision;
+  final leadingZero = params.leadingZero;
+  final defaultPx = params.defaultPx;
+  final convertToPx = params.convertToPx;
 
   String roundValues(String lists) {
     final roundedList = <String>[];

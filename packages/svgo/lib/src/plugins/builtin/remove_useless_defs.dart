@@ -19,14 +19,15 @@ import '../plugin.dart';
 ///
 /// References:
 /// - SVG Defs: https://developer.mozilla.org/en-US/docs/Web/SVG/Element/defs
-const removeUselessDefs = Plugin(
+const removeUselessDefs = Plugin<EmptyParams>(
   name: 'removeUselessDefs',
   description: 'removes elements in <defs> without id',
+  defaultParams: EmptyParams(),
   fn: _removeUselessDefsFn,
 );
 
 Visitor? _removeUselessDefsFn(
-    XastRoot root, PluginParams params, SvgoInfo info) {
+    XastRoot root, EmptyParams params, SvgoInfo info) {
   return Visitor(
     element: VisitorNode(
       enter: (node, parentNode) {

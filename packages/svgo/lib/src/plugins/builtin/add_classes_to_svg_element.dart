@@ -5,22 +5,31 @@ import '../../xast/xast.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
-const addClassesToSVGElement = Plugin(
+/// Parameters for the addClassesToSVGElement plugin.
+class AddClassesToSVGElementParams extends PluginParams {
+  /// Class names to add to the SVG element.
+  final List<String> classNames;
+
+  const AddClassesToSVGElementParams({
+    this.classNames = const [],
+  });
+}
+
+const addClassesToSVGElement = Plugin<AddClassesToSVGElementParams>(
   name: 'addClassesToSVGElement',
   description: 'adds classnames to an outer <svg> element',
-  params: {},
+  defaultParams: AddClassesToSVGElementParams(),
   fn: _addClassesToSVGElementFn,
 );
 
 Visitor? _addClassesToSVGElementFn(
   XastRoot ast,
-  PluginParams params,
+  AddClassesToSVGElementParams params,
   SvgoInfo info,
 ) {
-  final classNames = params['classNames'] as List<String>? ??
-      (params['className'] != null ? [params['className'] as String] : null);
+  final classNames = params.classNames;
 
-  if (classNames == null || classNames.isEmpty) {
+  if (classNames.isEmpty) {
     return null;
   }
 
@@ -33,7 +42,7 @@ Visitor? _addClassesToSVGElementFn(
           if (existingClass != null && existingClass.isNotEmpty) {
             classList.addAll(existingClass.split(RegExp(r'\s+')));
           }
-          classList.addAll(classNames.whereType<String>());
+          classList.addAll(classNames);
           node.attributes['class'] = classList.join(' ');
         }
         return null;

@@ -28,13 +28,14 @@ import '../plugin.dart';
 ///   <image xlink:href="image.png"/>
 /// </svg>
 /// ```
-const removeUnusedNS = Plugin(
+const removeUnusedNS = Plugin<EmptyParams>(
   name: 'removeUnusedNS',
   description: 'removes unused namespaces declaration',
+  defaultParams: EmptyParams(),
   fn: _removeUnusedNSFn,
 );
 
-Visitor? _removeUnusedNSFn(XastRoot ast, PluginParams params, SvgoInfo info) {
+Visitor? _removeUnusedNSFn(XastRoot ast, EmptyParams params, SvgoInfo info) {
   final unusedNamespaces = <String>{};
 
   return Visitor(

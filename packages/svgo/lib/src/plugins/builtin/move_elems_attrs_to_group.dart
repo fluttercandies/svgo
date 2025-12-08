@@ -31,14 +31,15 @@ import '../plugin.dart';
 ///
 /// References:
 /// - SVG Inheritable Properties: https://www.w3.org/TR/SVG11/propidx.html
-const moveElemsAttrsToGroup = Plugin(
+const moveElemsAttrsToGroup = Plugin<EmptyParams>(
   name: 'moveElemsAttrsToGroup',
   description: 'Move common attributes of group children to the group',
+  defaultParams: EmptyParams(),
   fn: _moveElemsAttrsToGroupFn,
 );
 
 Visitor? _moveElemsAttrsToGroupFn(
-    XastRoot root, PluginParams params, SvgoInfo info) {
+    XastRoot root, EmptyParams params, SvgoInfo info) {
   // Find if any style element is present
   var deoptimizedWithStyles = false;
 

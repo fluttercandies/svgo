@@ -9,15 +9,16 @@ final _regEnableBackground = RegExp(
   r'^new\s0\s0\s([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)\s([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)$',
 );
 
-const cleanupEnableBackground = Plugin(
+const cleanupEnableBackground = Plugin<EmptyParams>(
   name: 'cleanupEnableBackground',
   description: 'remove or cleanup enable-background attribute when possible',
+  defaultParams: EmptyParams(),
   fn: _cleanupEnableBackgroundFn,
 );
 
 Visitor? _cleanupEnableBackgroundFn(
   XastRoot ast,
-  PluginParams params,
+  EmptyParams params,
   SvgoInfo info,
 ) {
   // Check if there are any filter elements

@@ -22,14 +22,14 @@ import '../plugin.dart';
 /// ```xml
 /// <svg>...</svg>
 /// ```
-const removeXMLProcInst = Plugin(
+const removeXMLProcInst = Plugin<EmptyParams>(
   name: 'removeXMLProcInst',
   description: 'removes XML processing instructions',
+  defaultParams: EmptyParams(),
   fn: _removeXMLProcInstFn,
 );
 
-Visitor? _removeXMLProcInstFn(
-    XastRoot ast, PluginParams params, SvgoInfo info) {
+Visitor? _removeXMLProcInstFn(XastRoot ast, EmptyParams params, SvgoInfo info) {
   return Visitor(
     instruction: VisitorNode(
       enter: (node, parentNode) {

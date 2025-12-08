@@ -16,27 +16,45 @@ import '../../xast/xast.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
-const convertTransform = Plugin(
+/// Parameters for the convertTransform plugin.
+class ConvertTransformParams extends PluginParams {
+  final bool convertToShorts;
+  final int? degPrecision;
+  final int floatPrecision;
+  final int transformPrecision;
+  final bool matrixToTransform;
+  final bool shortTranslate;
+  final bool shortScale;
+  final bool shortRotate;
+  final bool removeUseless;
+  final bool collapseIntoOne;
+  final bool leadingZero;
+  final bool negativeExtraSpace;
+
+  const ConvertTransformParams({
+    this.convertToShorts = true,
+    this.degPrecision,
+    this.floatPrecision = 3,
+    this.transformPrecision = 5,
+    this.matrixToTransform = true,
+    this.shortTranslate = true,
+    this.shortScale = true,
+    this.shortRotate = true,
+    this.removeUseless = true,
+    this.collapseIntoOne = true,
+    this.leadingZero = true,
+    this.negativeExtraSpace = false,
+  });
+}
+
+const convertTransform = Plugin<ConvertTransformParams>(
   name: 'convertTransform',
   description: 'collapses multiple transformations and optimizes it',
-  params: {
-    'convertToShorts': true,
-    'degPrecision': null,
-    'floatPrecision': 3,
-    'transformPrecision': 5,
-    'matrixToTransform': true,
-    'shortTranslate': true,
-    'shortScale': true,
-    'shortRotate': true,
-    'removeUseless': true,
-    'collapseIntoOne': true,
-    'leadingZero': true,
-    'negativeExtraSpace': false,
-  },
+  defaultParams: ConvertTransformParams(),
   fn: _convertTransformFn,
 );
 
-/// Transform parameters for processing.
+/// Transform parameters for processing (internal mutable copy).
 class _TransformParams {
   _TransformParams({
     required this.convertToShorts,
@@ -84,22 +102,22 @@ class _TransformParams {
 
 Visitor? _convertTransformFn(
   XastRoot ast,
-  PluginParams params,
+  ConvertTransformParams params,
   SvgoInfo info,
 ) {
   final baseParams = _TransformParams(
-    convertToShorts: params['convertToShorts'] != false,
-    degPrecision: params['degPrecision'] as int?,
-    floatPrecision: params['floatPrecision'] as int? ?? 3,
-    transformPrecision: params['transformPrecision'] as int? ?? 5,
-    matrixToTransform: params['matrixToTransform'] != false,
-    shortTranslate: params['shortTranslate'] != false,
-    shortScale: params['shortScale'] != false,
-    shortRotate: params['shortRotate'] != false,
-    removeUseless: params['removeUseless'] != false,
-    collapseIntoOne: params['collapseIntoOne'] != false,
-    leadingZero: params['leadingZero'] != false,
-    negativeExtraSpace: params['negativeExtraSpace'] == true,
+    convertToShorts: params.convertToShorts,
+    degPrecision: params.degPrecision,
+    floatPrecision: params.floatPrecision,
+    transformPrecision: params.transformPrecision,
+    matrixToTransform: params.matrixToTransform,
+    shortTranslate: params.shortTranslate,
+    shortScale: params.shortScale,
+    shortRotate: params.shortRotate,
+    removeUseless: params.removeUseless,
+    collapseIntoOne: params.collapseIntoOne,
+    leadingZero: params.leadingZero,
+    negativeExtraSpace: params.negativeExtraSpace,
   );
 
   void processTransform(XastElement node, String attrName) {

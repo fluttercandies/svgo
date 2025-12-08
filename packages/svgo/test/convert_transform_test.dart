@@ -14,7 +14,7 @@ void main() {
       final result = optimize(
         input,
         SvgoConfig(
-          plugins: ['convertTransform'],
+          plugins: [convertTransform],
         ),
       );
 
@@ -34,10 +34,9 @@ void main() {
         input,
         SvgoConfig(
           plugins: [
-            {
-              'name': 'convertTransform',
-              'params': {'floatPrecision': 3},
-            },
+            convertTransform.withParams(
+              ConvertTransformParams(floatPrecision: 3),
+            ),
           ],
         ),
       );
@@ -57,7 +56,7 @@ void main() {
       final result = optimize(
         input,
         SvgoConfig(
-          plugins: ['convertTransform'],
+          plugins: [convertTransform],
         ),
       );
 
@@ -76,7 +75,7 @@ void main() {
       final result = optimize(
         input,
         SvgoConfig(
-          plugins: ['convertTransform'],
+          plugins: [convertTransform],
         ),
       );
 
@@ -95,7 +94,7 @@ void main() {
       final result = optimize(
         input,
         SvgoConfig(
-          plugins: ['convertTransform'],
+          plugins: [convertTransform],
         ),
       );
 
@@ -113,7 +112,7 @@ void main() {
       final result = optimize(
         input,
         SvgoConfig(
-          plugins: ['convertTransform'],
+          plugins: [convertTransform],
         ),
       );
 
@@ -131,7 +130,7 @@ void main() {
       final result = optimize(
         input,
         SvgoConfig(
-          plugins: ['convertTransform'],
+          plugins: [convertTransform],
         ),
       );
 
@@ -150,7 +149,7 @@ void main() {
       final result = optimize(
         input,
         SvgoConfig(
-          plugins: ['convertTransform'],
+          plugins: [convertTransform],
         ),
       );
 
@@ -170,7 +169,7 @@ void main() {
       final result = optimize(
         input,
         SvgoConfig(
-          plugins: ['convertTransform'],
+          plugins: [convertTransform],
         ),
       );
 
@@ -188,7 +187,7 @@ void main() {
       final result = optimize(
         input,
         SvgoConfig(
-          plugins: ['convertTransform'],
+          plugins: [convertTransform],
         ),
       );
 
@@ -207,10 +206,9 @@ void main() {
         input,
         SvgoConfig(
           plugins: [
-            {
-              'name': 'convertTransform',
-              'params': {'floatPrecision': 2},
-            },
+            convertTransform.withParams(
+              ConvertTransformParams(floatPrecision: 2),
+            ),
           ],
         ),
       );
@@ -231,10 +229,9 @@ void main() {
         input,
         SvgoConfig(
           plugins: [
-            {
-              'name': 'convertTransform',
-              'params': {'transformPrecision': 1},
-            },
+            convertTransform.withParams(
+              ConvertTransformParams(transformPrecision: 1),
+            ),
           ],
         ),
       );
@@ -253,7 +250,7 @@ void main() {
       final result = optimize(
         input,
         SvgoConfig(
-          plugins: ['convertTransform'],
+          plugins: [convertTransform],
         ),
       );
 
@@ -272,7 +269,7 @@ void main() {
       final result = optimize(
         input,
         SvgoConfig(
-          plugins: ['convertTransform'],
+          plugins: [convertTransform],
         ),
       );
 
@@ -291,7 +288,7 @@ void main() {
       final result = optimize(
         input,
         SvgoConfig(
-          plugins: ['convertTransform'],
+          plugins: [convertTransform],
         ),
       );
 
@@ -310,7 +307,7 @@ void main() {
       final result = optimize(
         input,
         SvgoConfig(
-          plugins: ['convertTransform'],
+          plugins: [convertTransform],
         ),
       );
 
@@ -329,7 +326,7 @@ void main() {
       final result = optimize(
         input,
         SvgoConfig(
-          plugins: ['convertTransform'],
+          plugins: [convertTransform],
         ),
       );
 
@@ -352,7 +349,7 @@ void main() {
       final result = optimize(
         input,
         SvgoConfig(
-          plugins: ['convertTransform'],
+          plugins: [convertTransform],
         ),
       );
 
@@ -373,7 +370,7 @@ void main() {
       final result = optimize(
         input,
         SvgoConfig(
-          plugins: ['convertTransform'],
+          plugins: [convertTransform],
         ),
       );
 
@@ -394,7 +391,7 @@ void main() {
       final result = optimize(
         input,
         SvgoConfig(
-          plugins: ['convertTransform'],
+          plugins: [convertTransform],
         ),
       );
 
@@ -413,7 +410,7 @@ void main() {
       final result = optimize(
         input,
         SvgoConfig(
-          plugins: ['convertTransform'],
+          plugins: [convertTransform],
         ),
       );
 
@@ -433,7 +430,7 @@ void main() {
       final result = optimize(
         input,
         SvgoConfig(
-          plugins: ['convertTransform'],
+          plugins: [convertTransform],
         ),
       );
 

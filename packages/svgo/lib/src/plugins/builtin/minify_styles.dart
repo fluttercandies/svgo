@@ -37,46 +37,66 @@ import '../plugin.dart';
 /// ```
 ///
 /// Parameters:
-/// - `restructure`: Enable structure optimizations (default: true)
-/// - `removeComments`: Remove CSS comments (default: true)
-/// - `usage`: Usage data for dead code elimination (default: true)
-///   - Can be boolean or object with tags, ids, classes fields
-///   - force: Force usage data even if scripts detected (default: false)
-const minifyStyles = Plugin(
+/// Parameters for the minifyStyles plugin.
+class MinifyStylesParams extends PluginParams {
+  /// Enable structure optimizations. Default: true
+  final bool restructure;
+
+  /// Remove CSS comments. Default: true
+  final bool removeComments;
+
+  /// Usage data configuration for dead code elimination.
+  final MinifyStylesUsage usage;
+
+  const MinifyStylesParams({
+    this.restructure = true,
+    this.removeComments = true,
+    this.usage = const MinifyStylesUsage(),
+  });
+}
+
+/// Usage configuration for minifyStyles plugin.
+class MinifyStylesUsage {
+  /// Enable tag-based usage analysis. Default: true
+  final bool tags;
+
+  /// Enable ID-based usage analysis. Default: true
+  final bool ids;
+
+  /// Enable class-based usage analysis. Default: true
+  final bool classes;
+
+  /// Force usage data even if scripts detected. Default: false
+  final bool force;
+
+  const MinifyStylesUsage({
+    this.tags = true,
+    this.ids = true,
+    this.classes = true,
+    this.force = false,
+  });
+}
+
+const minifyStyles = Plugin<MinifyStylesParams>(
   name: 'minifyStyles',
   description: 'minifies styles and removes unused styles',
-  params: {
-    'restructure': true,
-    'removeComments': true,
-    'usage': true,
-  },
+  defaultParams: MinifyStylesParams(),
   fn: _minifyStylesFn,
 );
 
 Visitor? _minifyStylesFn(
   XastRoot ast,
-  PluginParams params,
+  MinifyStylesParams params,
   SvgoInfo info,
 ) {
-  final removeComments = params['removeComments'] as bool? ?? true;
-  final usage = params['usage'];
+  final removeComments = params.removeComments;
+  final usage = params.usage;
 
   // Parse usage options
-  var enableTagsUsage = true;
-  var enableIdsUsage = true;
-  var enableClassesUsage = true;
-  var forceUsageDeoptimized = false;
-
-  if (usage is bool) {
-    enableTagsUsage = usage;
-    enableIdsUsage = usage;
-    enableClassesUsage = usage;
-  } else if (usage is Map) {
-    enableTagsUsage = usage['tags'] as bool? ?? true;
-    enableIdsUsage = usage['ids'] as bool? ?? true;
-    enableClassesUsage = usage['classes'] as bool? ?? true;
-    forceUsageDeoptimized = usage['force'] as bool? ?? false;
-  }
+  final enableTagsUsage = usage.tags;
+  final enableIdsUsage = usage.ids;
+  final enableClassesUsage = usage.classes;
+  final forceUsageDeoptimized = usage.force;
 
   // Collect style elements and elements with style attributes
   final styleElements = <(XastElement, XastParent)>[];

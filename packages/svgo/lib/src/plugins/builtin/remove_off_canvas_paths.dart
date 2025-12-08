@@ -31,9 +31,10 @@ import '../plugin.dart';
 ///   <path d="M0 0 L50 50"/>
 /// </svg>
 /// ```
-const removeOffCanvasPaths = Plugin(
+const removeOffCanvasPaths = Plugin<EmptyParams>(
   name: 'removeOffCanvasPaths',
   description: 'removes elements that are drawn outside of the viewBox',
+  defaultParams: EmptyParams(),
   fn: _removeOffCanvasPathsFn,
 );
 
@@ -56,7 +57,7 @@ class _ViewBoxData {
 }
 
 Visitor? _removeOffCanvasPathsFn(
-    XastRoot ast, PluginParams params, SvgoInfo info) {
+    XastRoot ast, EmptyParams params, SvgoInfo info) {
   _ViewBoxData? viewBoxData;
 
   return Visitor(

@@ -6,15 +6,16 @@ import '../../xast/xast.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
-const removeNonInheritableGroupAttrs = Plugin(
+const removeNonInheritableGroupAttrs = Plugin<EmptyParams>(
   name: 'removeNonInheritableGroupAttrs',
   description: "removes non-inheritable group's presentational attributes",
+  defaultParams: EmptyParams(),
   fn: _removeNonInheritableGroupAttrsFn,
 );
 
 Visitor? _removeNonInheritableGroupAttrsFn(
   XastRoot ast,
-  PluginParams params,
+  EmptyParams params,
   SvgoInfo info,
 ) {
   return Visitor(

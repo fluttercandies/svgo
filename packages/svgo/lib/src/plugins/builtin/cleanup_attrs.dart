@@ -13,6 +13,24 @@ final _regNewlinesNeedSpace = RegExp(r'(\S)\r?\n(\S)');
 final _regNewlines = RegExp(r'\r?\n');
 final _regSpaces = RegExp(r'\s{2,}');
 
+/// Parameters for the cleanupAttrs plugin.
+class CleanupAttrsParams extends PluginParams {
+  /// Remove newlines from attributes. Default: true
+  final bool newlines;
+
+  /// Trim leading/trailing whitespace. Default: true
+  final bool trim;
+
+  /// Collapse multiple spaces to single space. Default: true
+  final bool spaces;
+
+  const CleanupAttrsParams({
+    this.newlines = true,
+    this.trim = true,
+    this.spaces = true,
+  });
+}
+
 /// Cleans up attribute values from newlines, trailing and repeating spaces.
 ///
 /// Example input:
@@ -30,27 +48,19 @@ final _regSpaces = RegExp(r'\s{2,}');
 ///   <rect class="foo bar baz"/>
 /// </svg>
 /// ```
-///
-/// Parameters:
-/// - `newlines`: Remove newlines from attributes. Default: true
-/// - `trim`: Trim leading/trailing whitespace. Default: true
-/// - `spaces`: Collapse multiple spaces to single space. Default: true
-const cleanupAttrs = Plugin(
+const cleanupAttrs = Plugin<CleanupAttrsParams>(
   name: 'cleanupAttrs',
   description:
       'cleanups attributes from newlines, trailing and repeating spaces',
-  params: {
-    'newlines': true,
-    'trim': true,
-    'spaces': true,
-  },
+  defaultParams: CleanupAttrsParams(),
   fn: _cleanupAttrsFn,
 );
 
-Visitor? _cleanupAttrsFn(XastRoot ast, PluginParams params, SvgoInfo info) {
-  final newlines = params['newlines'] != false;
-  final trim = params['trim'] != false;
-  final spaces = params['spaces'] != false;
+Visitor? _cleanupAttrsFn(
+    XastRoot ast, CleanupAttrsParams params, SvgoInfo info) {
+  final newlines = params.newlines;
+  final trim = params.trim;
+  final spaces = params.spaces;
 
   return Visitor(
     element: VisitorNode(

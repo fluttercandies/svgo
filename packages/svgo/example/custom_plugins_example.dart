@@ -18,7 +18,7 @@ void main() {
   final defaultResult = optimize(
       input,
       SvgoConfig(
-        plugins: ['preset-default'],
+        plugins: [presetDefault],
       ));
   print(defaultResult.data);
 
@@ -28,27 +28,24 @@ void main() {
       input,
       SvgoConfig(
         plugins: [
-          'removeComments',
-          'convertColors',
-          'convertEllipseToCircle',
+          removeComments,
+          convertColors,
+          convertEllipseToCircle,
         ],
       ));
   print(customResult.data);
 
   print('\n=== Plugin with Parameters ===');
-  // Configure plugin parameters
+  // Configure plugin parameters using withParams()
   final paramResult = optimize(
       input,
       SvgoConfig(
         plugins: [
-          {
-            'name': 'cleanupNumericValues',
-            'params': {
-              'floatPrecision': 1,
-            },
-          },
-          'removeComments',
-          'convertColors',
+          cleanupNumericValues.withParams(
+            CleanupNumericValuesParams(floatPrecision: 1),
+          ),
+          removeComments,
+          convertColors,
         ],
       ));
   print(paramResult.data);

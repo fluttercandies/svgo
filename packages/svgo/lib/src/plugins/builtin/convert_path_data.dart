@@ -12,73 +12,138 @@ import '../../xast/xast.dart';
 import '../plugin.dart';
 import 'apply_transforms.dart' as apply_transforms_plugin;
 
-const convertPathData = Plugin(
+/// Configuration for makeArcs feature.
+class MakeArcsConfig {
+  /// Coefficient of rounding error. Default: 2.5
+  final double threshold;
+
+  /// Percentage of radius. Default: 0.5
+  final double tolerance;
+
+  const MakeArcsConfig({
+    this.threshold = 2.5,
+    this.tolerance = 0.5,
+  });
+}
+
+/// Parameters for the convertPathData plugin.
+class ConvertPathDataParams extends PluginParams {
+  /// Apply transforms to path data. Default: true
+  final bool applyTransforms;
+
+  /// Apply transforms to stroked elements. Default: true
+  final bool applyTransformsStroked;
+
+  /// Configuration for converting curves to arcs. Null to disable.
+  final MakeArcsConfig? makeArcs;
+
+  /// Convert curves that are straight to lines. Default: true
+  final bool straightCurves;
+
+  /// Convert cubic bezier to quadratic when possible. Default: true
+  final bool convertToQ;
+
+  /// Use line shorthands H/V. Default: true
+  final bool lineShorthands;
+
+  /// Convert lines at start to Z (closepath). Default: true
+  final bool convertToZ;
+
+  /// Use curve shorthands S/T. Default: true
+  final bool curveSmoothShorthands;
+
+  /// Float precision for coordinates. Default: 3
+  final int floatPrecision;
+
+  /// Transform precision. Default: 5
+  final int transformPrecision;
+
+  /// Smart rounding for arcs. Default: true
+  final bool smartArcRounding;
+
+  /// Remove useless path commands. Default: true
+  final bool removeUseless;
+
+  /// Collapse repeated commands. Default: true
+  final bool collapseRepeated;
+
+  /// Use absolute coordinates when shorter. Default: true
+  final bool utilizeAbsolute;
+
+  /// Remove leading zeros. Default: true
+  final bool leadingZero;
+
+  /// Use negative sign as separator. Default: true
+  final bool negativeExtraSpace;
+
+  /// No space after arc flags. Default: false
+  final bool noSpaceAfterFlags;
+
+  /// Force absolute path output. Default: false
+  final bool forceAbsolutePath;
+
+  const ConvertPathDataParams({
+    this.applyTransforms = true,
+    this.applyTransformsStroked = true,
+    this.makeArcs = const MakeArcsConfig(),
+    this.straightCurves = true,
+    this.convertToQ = true,
+    this.lineShorthands = true,
+    this.convertToZ = true,
+    this.curveSmoothShorthands = true,
+    this.floatPrecision = 3,
+    this.transformPrecision = 5,
+    this.smartArcRounding = true,
+    this.removeUseless = true,
+    this.collapseRepeated = true,
+    this.utilizeAbsolute = true,
+    this.leadingZero = true,
+    this.negativeExtraSpace = true,
+    this.noSpaceAfterFlags = false,
+    this.forceAbsolutePath = false,
+  });
+}
+
+const convertPathData = Plugin<ConvertPathDataParams>(
   name: 'convertPathData',
   description:
       'optimizes path data: writes in shorter form, applies transformations',
-  params: {
-    'applyTransforms': true,
-    'applyTransformsStroked': true,
-    'makeArcs': {
-      'threshold': 2.5, // coefficient of rounding error
-      'tolerance': 0.5, // percentage of radius
-    },
-    'straightCurves': true,
-    'convertToQ': true,
-    'lineShorthands': true,
-    'convertToZ': true,
-    'curveSmoothShorthands': true,
-    'floatPrecision': 3,
-    'transformPrecision': 5,
-    'smartArcRounding': true,
-    'removeUseless': true,
-    'collapseRepeated': true,
-    'utilizeAbsolute': true,
-    'leadingZero': true,
-    'negativeExtraSpace': true,
-    'noSpaceAfterFlags': false,
-    'forceAbsolutePath': false,
-  },
+  defaultParams: ConvertPathDataParams(),
   fn: _convertPathDataFn,
 );
 
 Visitor? _convertPathDataFn(
   XastRoot ast,
-  PluginParams params,
+  ConvertPathDataParams params,
   SvgoInfo info,
 ) {
   // Handle applyTransforms parameter
-  final doApplyTransforms = params['applyTransforms'] != false;
-  final applyTransformsStroked = params['applyTransformsStroked'] != false;
-  final transformPrecision = (params['transformPrecision'] as int?) ?? 5;
+  final doApplyTransforms = params.applyTransforms;
+  final applyTransformsStroked = params.applyTransformsStroked;
+  final transformPrecision = params.transformPrecision;
 
-  final straightCurves = params['straightCurves'] != false;
-  final convertToQ = params['convertToQ'] != false;
-  final lineShorthands = params['lineShorthands'] != false;
-  final convertToZ = params['convertToZ'] != false;
-  final curveSmoothShorthands = params['curveSmoothShorthands'] != false;
-  final floatPrecision = (params['floatPrecision'] as int?) ?? 3;
-  final removeUseless = params['removeUseless'] != false;
-  final collapseRepeated = params['collapseRepeated'] != false;
-  final utilizeAbsolute = params['utilizeAbsolute'] != false;
-  final leadingZero = params['leadingZero'] != false;
-  final negativeExtraSpace = params['negativeExtraSpace'] != false;
-  final noSpaceAfterFlags = params['noSpaceAfterFlags'] == true;
-  final smartArcRounding = params['smartArcRounding'] != false;
-  final forceAbsolutePath = params['forceAbsolutePath'] == true;
+  final straightCurves = params.straightCurves;
+  final convertToQ = params.convertToQ;
+  final lineShorthands = params.lineShorthands;
+  final convertToZ = params.convertToZ;
+  final curveSmoothShorthands = params.curveSmoothShorthands;
+  final floatPrecision = params.floatPrecision;
+  final removeUseless = params.removeUseless;
+  final collapseRepeated = params.collapseRepeated;
+  final utilizeAbsolute = params.utilizeAbsolute;
+  final leadingZero = params.leadingZero;
+  final negativeExtraSpace = params.negativeExtraSpace;
+  final noSpaceAfterFlags = params.noSpaceAfterFlags;
+  final smartArcRounding = params.smartArcRounding;
+  final forceAbsolutePath = params.forceAbsolutePath;
 
   // Parse makeArcs parameters
-  final makeArcsParam = params['makeArcs'];
   _MakeArcsConfig? makeArcs;
-  if (makeArcsParam != null && makeArcsParam != false) {
-    if (makeArcsParam is Map) {
-      makeArcs = _MakeArcsConfig(
-        threshold: (makeArcsParam['threshold'] as num?)?.toDouble() ?? 2.5,
-        tolerance: (makeArcsParam['tolerance'] as num?)?.toDouble() ?? 0.5,
-      );
-    } else {
-      makeArcs = const _MakeArcsConfig(threshold: 2.5, tolerance: 0.5);
-    }
+  if (params.makeArcs != null) {
+    makeArcs = _MakeArcsConfig(
+      threshold: params.makeArcs!.threshold,
+      tolerance: params.makeArcs!.tolerance,
+    );
   }
 
   // Match node_svgo: error = +Math.pow(0.1, precision).toFixed(precision)
@@ -92,10 +157,10 @@ Visitor? _convertPathDataFn(
   if (doApplyTransforms) {
     final applyTransformsVisitor = apply_transforms_plugin.applyTransforms.fn(
       ast,
-      {
-        'transformPrecision': transformPrecision,
-        'applyTransformsStroked': applyTransformsStroked,
-      },
+      apply_transforms_plugin.ApplyTransformsParams(
+        transformPrecision: transformPrecision,
+        applyTransformsStroked: applyTransformsStroked,
+      ),
       info,
     );
     if (applyTransformsVisitor != null) {

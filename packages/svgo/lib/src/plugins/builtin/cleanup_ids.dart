@@ -16,16 +16,36 @@ final _regAnimationRef = RegExp(
   r'([a-zA-Z][\w-]*)\.(begin|end)',
 );
 
-const cleanupIds = Plugin(
+/// Parameters for the cleanupIds plugin.
+class CleanupIdsParams extends PluginParams {
+  /// Remove unused IDs. Default: true
+  final bool remove;
+
+  /// Minify used IDs. Default: true
+  final bool minify;
+
+  /// List of IDs to preserve. Default: empty
+  final List<String> preserve;
+
+  /// List of ID prefixes to preserve. Default: empty
+  final List<String> preservePrefixes;
+
+  /// Force cleanup even with style/script elements. Default: false
+  final bool force;
+
+  const CleanupIdsParams({
+    this.remove = true,
+    this.minify = true,
+    this.preserve = const [],
+    this.preservePrefixes = const [],
+    this.force = false,
+  });
+}
+
+const cleanupIds = Plugin<CleanupIdsParams>(
   name: 'cleanupIds',
   description: 'removes unused IDs and minifies used',
-  params: {
-    'remove': true,
-    'minify': true,
-    'preserve': <String>[],
-    'preservePrefixes': <String>[],
-    'force': false,
-  },
+  defaultParams: CleanupIdsParams(),
   fn: _cleanupIdsFn,
 );
 
@@ -60,20 +80,14 @@ bool _isDefsOnly(XastRoot ast) {
 
 Visitor? _cleanupIdsFn(
   XastRoot ast,
-  PluginParams params,
+  CleanupIdsParams params,
   SvgoInfo info,
 ) {
-  final remove = params['remove'] != false;
-  final minify = params['minify'] != false;
-  final preserveParam = params['preserve'];
-  final preserve = preserveParam is String
-      ? [preserveParam]
-      : (preserveParam as List?)?.cast<String>() ?? [];
-  final preservePrefixesParam = params['preservePrefixes'];
-  final preservePrefixes = preservePrefixesParam is String
-      ? [preservePrefixesParam]
-      : (preservePrefixesParam as List?)?.cast<String>() ?? [];
-  final force = params['force'] == true;
+  final remove = params.remove;
+  final minify = params.minify;
+  final preserve = params.preserve;
+  final preservePrefixes = params.preservePrefixes;
+  final force = params.force;
 
   // Skip if SVG consists only of defs (external symbol library)
   if (_isDefsOnly(ast)) {

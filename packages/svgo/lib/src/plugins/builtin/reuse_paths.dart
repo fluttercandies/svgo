@@ -32,14 +32,15 @@ import '../plugin.dart';
 ///   <use xlink:href="#reuse-0"/>
 /// </svg>
 /// ```
-const reusePaths = Plugin(
+const reusePaths = Plugin<EmptyParams>(
   name: 'reusePaths',
   description:
       'Finds <path> elements with the same d, fill, and stroke, and converts them to <use> elements',
+  defaultParams: EmptyParams(),
   fn: _reusePathsFn,
 );
 
-Visitor? _reusePathsFn(XastRoot ast, PluginParams params, SvgoInfo info) {
+Visitor? _reusePathsFn(XastRoot ast, EmptyParams params, SvgoInfo info) {
   final stylesheet = collectStylesheet(ast);
 
   // Map of path signature to list of path elements

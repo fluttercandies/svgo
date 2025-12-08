@@ -5,6 +5,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-12-08
+
+### Changed
+
+- **Breaking Change**: Plugin API is now fully type-safe using generics
+  - `Plugin` class is now generic: `Plugin<P extends PluginParams>`
+  - Each plugin with parameters has a dedicated `[PluginName]Params` class
+  - Use `plugin.withParams(CustomParams(...))` to customize plugin parameters
+  - Plugins without parameters use `EmptyParams`
+- Removed deprecated string-based plugin configuration (e.g., `plugins: ['removeComments']`)
+- Removed deprecated Map-based parameter configuration (e.g., `{'name': 'plugin', 'params': {...}}`)
+
+### Added
+
+- `PluginParams` abstract base class for all plugin parameters
+- `EmptyParams` class for plugins without configuration
+- `withParams(P)` method on Plugin for creating configured plugin instances
+- `invoke()` method on Plugin for type-safe plugin invocation
+- Individual params classes for all 54 plugins (e.g., `ConvertPathDataParams`, `MinifyStylesParams`)
+
+### Migration Guide
+
+```dart
+// Before (1.0.0):
+optimize(input, SvgoConfig(plugins: [
+  'removeComments',
+  {'name': 'cleanupNumericValues', 'params': {'floatPrecision': 1}},
+]));
+
+// After (1.1.0):
+optimize(input, SvgoConfig(plugins: [
+  removeComments,
+  cleanupNumericValues.withParams(
+    CleanupNumericValuesParams(floatPrecision: 1),
+  ),
+]));
+```
+
 ## [1.0.0] - 2025-12-06
 
 ### Added

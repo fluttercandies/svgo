@@ -8,25 +8,39 @@ import '../../xast/xast_utils.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
-const removeUselessStrokeAndFill = Plugin(
+/// Parameters for the removeUselessStrokeAndFill plugin.
+class RemoveUselessStrokeAndFillParams extends PluginParams {
+  /// Remove stroke attributes when stroke is none/0. Default: true
+  final bool stroke;
+
+  /// Remove fill attributes when fill is none/0. Default: true
+  final bool fill;
+
+  /// Remove elements when both stroke and fill are none. Default: false
+  final bool removeNone;
+
+  const RemoveUselessStrokeAndFillParams({
+    this.stroke = true,
+    this.fill = true,
+    this.removeNone = false,
+  });
+}
+
+const removeUselessStrokeAndFill = Plugin<RemoveUselessStrokeAndFillParams>(
   name: 'removeUselessStrokeAndFill',
   description: 'removes useless stroke and fill attributes',
-  params: {
-    'stroke': true,
-    'fill': true,
-    'removeNone': false,
-  },
+  defaultParams: RemoveUselessStrokeAndFillParams(),
   fn: _removeUselessStrokeAndFillFn,
 );
 
 Visitor? _removeUselessStrokeAndFillFn(
   XastRoot ast,
-  PluginParams params,
+  RemoveUselessStrokeAndFillParams params,
   SvgoInfo info,
 ) {
-  final removeStroke = params['stroke'] != false;
-  final removeFill = params['fill'] != false;
-  final removeNone = params['removeNone'] == true;
+  final removeStroke = params.stroke;
+  final removeFill = params.fill;
+  final removeNone = params.removeNone;
 
   // Check if document has scripts or style elements
   var hasStyleOrScript = false;

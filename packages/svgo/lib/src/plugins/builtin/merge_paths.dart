@@ -10,14 +10,28 @@ import '../../xast/xast.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
-const mergePaths = Plugin(
+/// Parameters for the mergePaths plugin.
+class MergePathsParams extends PluginParams {
+  /// Merge paths even if they intersect. Default: false
+  final bool force;
+
+  /// Float precision for path data. Default: 3
+  final int floatPrecision;
+
+  /// Use short arc flags. Default: false
+  final bool noSpaceAfterFlags;
+
+  const MergePathsParams({
+    this.force = false,
+    this.floatPrecision = 3,
+    this.noSpaceAfterFlags = false,
+  });
+}
+
+const mergePaths = Plugin<MergePathsParams>(
   name: 'mergePaths',
   description: 'merges multiple paths in one if possible',
-  params: {
-    'force': false,
-    'floatPrecision': 3,
-    'noSpaceAfterFlags': false,
-  },
+  defaultParams: MergePathsParams(),
   fn: _mergePathsFn,
 );
 
@@ -31,12 +45,12 @@ bool _elementHasUrl(Map<String, ComputedStyle> computedStyle, String attName) {
 
 Visitor? _mergePathsFn(
   XastRoot ast,
-  PluginParams params,
+  MergePathsParams params,
   SvgoInfo info,
 ) {
-  final force = params['force'] == true;
-  final floatPrecision = (params['floatPrecision'] as int?) ?? 3;
-  final noSpaceAfterFlags = params['noSpaceAfterFlags'] == true;
+  final force = params.force;
+  final floatPrecision = params.floatPrecision;
+  final noSpaceAfterFlags = params.noSpaceAfterFlags;
 
   final stylesheet = collectStylesheet(ast);
 

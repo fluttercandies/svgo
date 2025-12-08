@@ -31,14 +31,15 @@ import '../plugin.dart';
 ///   <rect/>
 /// </svg>
 /// ```
-const removeEmptyContainers = Plugin(
+const removeEmptyContainers = Plugin<EmptyParams>(
   name: 'removeEmptyContainers',
   description: 'removes empty container elements',
+  defaultParams: EmptyParams(),
   fn: _removeEmptyContainersFn,
 );
 
 Visitor? _removeEmptyContainersFn(
-    XastRoot ast, PluginParams params, SvgoInfo info) {
+    XastRoot ast, EmptyParams params, SvgoInfo info) {
   final stylesheet = collectStylesheet(ast);
 
   return Visitor(

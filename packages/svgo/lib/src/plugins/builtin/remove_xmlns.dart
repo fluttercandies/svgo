@@ -5,15 +5,16 @@ import '../../xast/xast.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
-const removeXMLNS = Plugin(
+const removeXMLNS = Plugin<EmptyParams>(
   name: 'removeXMLNS',
   description: 'removes xmlns attribute (for inline svg)',
+  defaultParams: EmptyParams(),
   fn: _removeXMLNSFn,
 );
 
 Visitor? _removeXMLNSFn(
   XastRoot ast,
-  PluginParams params,
+  EmptyParams params,
   SvgoInfo info,
 ) {
   return Visitor(

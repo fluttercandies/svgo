@@ -30,6 +30,29 @@ const _defaultOrder = [
   'points',
 ];
 
+/// Where to place xmlns attributes.
+enum XmlnsOrder {
+  /// Place xmlns at front.
+  front,
+
+  /// Sort xmlns alphabetically with other attributes.
+  alphabetical,
+}
+
+/// Parameters for the sortAttrs plugin.
+class SortAttrsParams extends PluginParams {
+  /// Custom attribute order.
+  final List<String> order;
+
+  /// Where to place xmlns attributes.
+  final XmlnsOrder xmlnsOrder;
+
+  const SortAttrsParams({
+    this.order = _defaultOrder,
+    this.xmlnsOrder = XmlnsOrder.front,
+  });
+}
+
 /// Sorts element attributes for better compression.
 ///
 /// Attributes are sorted in the following order:
@@ -48,26 +71,19 @@ const _defaultOrder = [
 /// ```xml
 /// <svg xmlns="..." id="icon" fill="red" d="...">
 /// ```
-///
-/// Parameters:
-/// - `order`: Custom attribute order. Default: id, width, height, x, y, etc.
-/// - `xmlnsOrder`: 'front' (default) puts xmlns first, 'alphabetical' sorts normally
-const sortAttrs = Plugin(
+const sortAttrs = Plugin<SortAttrsParams>(
   name: 'sortAttrs',
   description: 'Sort element attributes for better compression',
-  params: {
-    'order': _defaultOrder,
-    'xmlnsOrder': 'front',
-  },
+  defaultParams: SortAttrsParams(),
   fn: _sortAttrsFn,
 );
 
-Visitor? _sortAttrsFn(XastRoot ast, PluginParams params, SvgoInfo info) {
-  final order = (params['order'] as List?)?.cast<String>() ?? _defaultOrder;
-  final xmlnsOrder = params['xmlnsOrder']?.toString() ?? 'front';
+Visitor? _sortAttrsFn(XastRoot ast, SortAttrsParams params, SvgoInfo info) {
+  final order = params.order;
+  final xmlnsOrder = params.xmlnsOrder;
 
   int getNsPriority(String name) {
-    if (xmlnsOrder == 'front') {
+    if (xmlnsOrder == XmlnsOrder.front) {
       if (name == 'xmlns') return 3;
       if (name.startsWith('xmlns:')) return 2;
     }

@@ -12,7 +12,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['mergePaths'],
+          plugins: [mergePaths],
         ),
       );
       // Paths should be merged
@@ -29,7 +29,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['mergePaths'],
+          plugins: [mergePaths],
         ),
       );
       // Paths should NOT be merged because they intersect
@@ -46,10 +46,7 @@ void main() {
         ''',
         SvgoConfig(
           plugins: [
-            {
-              'name': 'mergePaths',
-              'params': {'force': true}
-            },
+            mergePaths.withParams(MergePathsParams(force: true)),
           ],
         ),
       );
@@ -66,7 +63,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['mergePaths'],
+          plugins: [mergePaths],
         ),
       );
       expect(result.data.split('<path').length, equals(2)); // Merged
@@ -81,7 +78,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['mergePaths'],
+          plugins: [mergePaths],
         ),
       );
       expect(result.data.split('<path').length, equals(2)); // Merged
@@ -96,7 +93,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['mergePaths'],
+          plugins: [mergePaths],
         ),
       );
       expect(result.data.split('<path').length, equals(2)); // Merged
@@ -111,7 +108,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['mergePaths'],
+          plugins: [mergePaths],
         ),
       );
       expect(result.data.split('<path').length, equals(3)); // 2 paths
@@ -126,7 +123,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['mergePaths'],
+          plugins: [mergePaths],
         ),
       );
       expect(result.data.split('<path').length, equals(2)); // Merged
@@ -141,7 +138,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['mergePaths'],
+          plugins: [mergePaths],
         ),
       );
       expect(result.data.split('<path').length, equals(2)); // Merged
@@ -156,7 +153,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['mergePaths'],
+          plugins: [mergePaths],
         ),
       );
       expect(result.data.split('<path').length, equals(2)); // Merged

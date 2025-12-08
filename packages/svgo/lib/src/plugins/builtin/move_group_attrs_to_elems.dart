@@ -31,9 +31,10 @@ import '../plugin.dart';
 ///
 /// References:
 /// - SVG Transform Attribute: https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/transform
-const moveGroupAttrsToElems = Plugin(
+const moveGroupAttrsToElems = Plugin<EmptyParams>(
   name: 'moveGroupAttrsToElems',
   description: 'moves some group attributes to the content elements',
+  defaultParams: EmptyParams(),
   fn: _moveGroupAttrsToElemsFn,
 );
 
@@ -48,7 +49,7 @@ const _pathElemsWithGroupsAndText = {
 final _urlReferenceRegex = RegExp(r'url\(');
 
 Visitor? _moveGroupAttrsToElemsFn(
-    XastRoot root, PluginParams params, SvgoInfo info) {
+    XastRoot root, EmptyParams params, SvgoInfo info) {
   return Visitor(
     element: VisitorNode(
       enter: (node, parentNode) {

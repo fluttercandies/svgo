@@ -12,7 +12,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['removeHiddenElems'],
+          plugins: [removeHiddenElems],
         ),
       );
       expect(result.data.contains('visibility="hidden"'), isFalse);
@@ -28,7 +28,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['removeHiddenElems'],
+          plugins: [removeHiddenElems],
         ),
       );
       expect(result.data.contains('display:none'), isFalse);
@@ -43,7 +43,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['removeHiddenElems'],
+          plugins: [removeHiddenElems],
         ),
       );
       expect(result.data.contains('r="0"'), isFalse);
@@ -59,7 +59,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['removeHiddenElems'],
+          plugins: [removeHiddenElems],
         ),
       );
       expect(result.data.contains('rx="0"'), isFalse);
@@ -74,7 +74,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['removeHiddenElems'],
+          plugins: [removeHiddenElems],
         ),
       );
       expect(result.data.contains('width="0"'), isFalse);
@@ -90,7 +90,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['removeHiddenElems'],
+          plugins: [removeHiddenElems],
         ),
       );
       expect(result.data.contains('height="0"'), isFalse);
@@ -106,7 +106,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['removeHiddenElems'],
+          plugins: [removeHiddenElems],
         ),
       );
       expect(result.data.split('<path').length, equals(2)); // Only 1 path
@@ -121,7 +121,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['removeHiddenElems'],
+          plugins: [removeHiddenElems],
         ),
       );
       expect(result.data.contains('opacity="0"'), isFalse);
@@ -140,7 +140,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['removeHiddenElems'],
+          plugins: [removeHiddenElems],
         ),
       );
       // Markers with display:none are still rendered, so they should be preserved
@@ -160,7 +160,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['removeHiddenElems'],
+          plugins: [removeHiddenElems],
         ),
       );
       // Note: removeHiddenElems tracks non-rendering nodes
@@ -181,7 +181,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['removeHiddenElems'],
+          plugins: [removeHiddenElems],
         ),
       );
       expect(result.data.contains('linearGradient'), isTrue);
@@ -196,7 +196,7 @@ void main() {
         </svg>
         ''',
         SvgoConfig(
-          plugins: ['removeHiddenElems'],
+          plugins: [removeHiddenElems],
         ),
       );
       // With script present, optimization is deoptimized

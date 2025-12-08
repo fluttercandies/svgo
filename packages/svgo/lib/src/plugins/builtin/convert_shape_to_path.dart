@@ -10,6 +10,20 @@ import '../../xast/xast.dart';
 import '../../xast/xast_utils.dart';
 import '../plugin.dart';
 
+/// Parameters for the convertShapeToPath plugin.
+class ConvertShapeToPathParams extends PluginParams {
+  /// Convert circle and ellipse to path. Default: false
+  final bool convertArcs;
+
+  /// Number of decimal places for coordinates. Default: 3
+  final int floatPrecision;
+
+  const ConvertShapeToPathParams({
+    this.convertArcs = false,
+    this.floatPrecision = 3,
+  });
+}
+
 /// Plugin that converts basic shapes to more compact path form.
 ///
 /// Converts `<rect>`, `<line>`, `<polyline>`, and `<polygon>` elements to
@@ -18,10 +32,6 @@ import '../plugin.dart';
 ///
 /// This allows further optimizations like combining paths with similar
 /// attributes.
-///
-/// Parameters:
-/// - `convertArcs`: If true, also convert circle and ellipse to path (default: false)
-/// - `floatPrecision`: Number of decimal places for coordinates (optional)
 ///
 /// Example:
 /// ```dart
@@ -32,9 +42,10 @@ import '../plugin.dart';
 ///
 /// References:
 /// - SVG Basic Shapes: https://www.w3.org/TR/SVG11/shapes.html
-const convertShapeToPath = Plugin(
+const convertShapeToPath = Plugin<ConvertShapeToPathParams>(
   name: 'convertShapeToPath',
   description: 'converts basic shapes to more compact path form',
+  defaultParams: ConvertShapeToPathParams(),
   fn: _convertShapeToPathFn,
 );
 
@@ -42,11 +53,11 @@ const convertShapeToPath = Plugin(
 final _regNumber = RegExp(r'[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?');
 
 Visitor? _convertShapeToPathFn(
-    XastRoot root, PluginParams params, SvgoInfo info) {
-  final convertArcs = params['convertArcs'] as bool? ?? false;
-  final precision = params['floatPrecision'] as int?;
+    XastRoot root, ConvertShapeToPathParams params, SvgoInfo info) {
+  final convertArcs = params.convertArcs;
+  final precision = params.floatPrecision;
   final stringifyOptions = PathStringifyOptions(
-    floatPrecision: precision ?? 3,
+    floatPrecision: precision,
   );
 
   return Visitor(

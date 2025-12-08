@@ -9,26 +9,47 @@ import '../../xast/xast_utils.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
-const removeHiddenElems = Plugin(
+/// Parameters for the removeHiddenElems plugin.
+class RemoveHiddenElemsParams extends PluginParams {
+  final bool isHidden;
+  final bool displayNone;
+  final bool opacity0;
+  final bool circleR0;
+  final bool ellipseRX0;
+  final bool ellipseRY0;
+  final bool rectWidth0;
+  final bool rectHeight0;
+  final bool patternWidth0;
+  final bool patternHeight0;
+  final bool imageWidth0;
+  final bool imageHeight0;
+  final bool pathEmptyD;
+  final bool polylineEmptyPoints;
+  final bool polygonEmptyPoints;
+
+  const RemoveHiddenElemsParams({
+    this.isHidden = true,
+    this.displayNone = true,
+    this.opacity0 = true,
+    this.circleR0 = true,
+    this.ellipseRX0 = true,
+    this.ellipseRY0 = true,
+    this.rectWidth0 = true,
+    this.rectHeight0 = true,
+    this.patternWidth0 = true,
+    this.patternHeight0 = true,
+    this.imageWidth0 = true,
+    this.imageHeight0 = true,
+    this.pathEmptyD = true,
+    this.polylineEmptyPoints = true,
+    this.polygonEmptyPoints = true,
+  });
+}
+
+const removeHiddenElems = Plugin<RemoveHiddenElemsParams>(
   name: 'removeHiddenElems',
   description: 'removes hidden elements (zero sized, with absent attributes)',
-  params: {
-    'isHidden': true,
-    'displayNone': true,
-    'opacity0': true,
-    'circleR0': true,
-    'ellipseRX0': true,
-    'ellipseRY0': true,
-    'rectWidth0': true,
-    'rectHeight0': true,
-    'patternWidth0': true,
-    'patternHeight0': true,
-    'imageWidth0': true,
-    'imageHeight0': true,
-    'pathEmptyD': true,
-    'polylineEmptyPoints': true,
-    'polygonEmptyPoints': true,
-  },
+  defaultParams: RemoveHiddenElemsParams(),
   fn: _removeHiddenElemsFn,
 );
 
@@ -94,24 +115,24 @@ bool _querySelector(XastElement node, String selector) {
 
 Visitor? _removeHiddenElemsFn(
   XastRoot ast,
-  PluginParams params,
+  RemoveHiddenElemsParams params,
   SvgoInfo info,
 ) {
-  final isHidden = params['isHidden'] != false;
-  final displayNone = params['displayNone'] != false;
-  final opacity0 = params['opacity0'] != false;
-  final circleR0 = params['circleR0'] != false;
-  final ellipseRX0 = params['ellipseRX0'] != false;
-  final ellipseRY0 = params['ellipseRY0'] != false;
-  final rectWidth0 = params['rectWidth0'] != false;
-  final rectHeight0 = params['rectHeight0'] != false;
-  final patternWidth0 = params['patternWidth0'] != false;
-  final patternHeight0 = params['patternHeight0'] != false;
-  final imageWidth0 = params['imageWidth0'] != false;
-  final imageHeight0 = params['imageHeight0'] != false;
-  final pathEmptyD = params['pathEmptyD'] != false;
-  final polylineEmptyPoints = params['polylineEmptyPoints'] != false;
-  final polygonEmptyPoints = params['polygonEmptyPoints'] != false;
+  final isHidden = params.isHidden;
+  final displayNone = params.displayNone;
+  final opacity0 = params.opacity0;
+  final circleR0 = params.circleR0;
+  final ellipseRX0 = params.ellipseRX0;
+  final ellipseRY0 = params.ellipseRY0;
+  final rectWidth0 = params.rectWidth0;
+  final rectHeight0 = params.rectHeight0;
+  final patternWidth0 = params.patternWidth0;
+  final patternHeight0 = params.patternHeight0;
+  final imageWidth0 = params.imageWidth0;
+  final imageHeight0 = params.imageHeight0;
+  final pathEmptyD = params.pathEmptyD;
+  final polylineEmptyPoints = params.polylineEmptyPoints;
+  final polygonEmptyPoints = params.polygonEmptyPoints;
 
   final stylesheet = collectStylesheet(ast);
 

@@ -8,20 +8,34 @@ import '../../xast/xast_utils.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
-const removeUnknownsAndDefaults = Plugin(
+/// Parameters for the removeUnknownsAndDefaults plugin.
+class RemoveUnknownsAndDefaultsParams extends PluginParams {
+  final bool unknownContent;
+  final bool unknownAttrs;
+  final bool defaultAttrs;
+  final bool defaultMarkupDeclarations;
+  final bool uselessOverrides;
+  final bool keepDataAttrs;
+  final bool keepAriaAttrs;
+  final bool keepRoleAttr;
+
+  const RemoveUnknownsAndDefaultsParams({
+    this.unknownContent = true,
+    this.unknownAttrs = true,
+    this.defaultAttrs = true,
+    this.defaultMarkupDeclarations = true,
+    this.uselessOverrides = true,
+    this.keepDataAttrs = true,
+    this.keepAriaAttrs = true,
+    this.keepRoleAttr = false,
+  });
+}
+
+const removeUnknownsAndDefaults = Plugin<RemoveUnknownsAndDefaultsParams>(
   name: 'removeUnknownsAndDefaults',
   description:
       'removes unknown elements content and attributes, removes attrs with default values',
-  params: {
-    'unknownContent': true,
-    'unknownAttrs': true,
-    'defaultAttrs': true,
-    'defaultMarkupDeclarations': true,
-    'uselessOverrides': true,
-    'keepDataAttrs': true,
-    'keepAriaAttrs': true,
-    'keepRoleAttr': false,
-  },
+  defaultParams: RemoveUnknownsAndDefaultsParams(),
   fn: _removeUnknownsAndDefaultsFn,
 );
 
@@ -95,21 +109,20 @@ void _initMaps() {
 
 Visitor? _removeUnknownsAndDefaultsFn(
   XastRoot ast,
-  PluginParams params,
+  RemoveUnknownsAndDefaultsParams params,
   SvgoInfo info,
 ) {
   // Initialize lookup maps
   _initMaps();
 
-  final unknownContent = params['unknownContent'] != false;
-  final unknownAttrs = params['unknownAttrs'] != false;
-  final defaultAttrs = params['defaultAttrs'] != false;
-  final defaultMarkupDeclarations =
-      params['defaultMarkupDeclarations'] != false;
-  final uselessOverrides = params['uselessOverrides'] != false;
-  final keepDataAttrs = params['keepDataAttrs'] != false;
-  final keepAriaAttrs = params['keepAriaAttrs'] != false;
-  final keepRoleAttr = params['keepRoleAttr'] == true;
+  final unknownContent = params.unknownContent;
+  final unknownAttrs = params.unknownAttrs;
+  final defaultAttrs = params.defaultAttrs;
+  final defaultMarkupDeclarations = params.defaultMarkupDeclarations;
+  final uselessOverrides = params.uselessOverrides;
+  final keepDataAttrs = params.keepDataAttrs;
+  final keepAriaAttrs = params.keepAriaAttrs;
+  final keepRoleAttr = params.keepRoleAttr;
 
   final stylesheet = collectStylesheet(ast);
 

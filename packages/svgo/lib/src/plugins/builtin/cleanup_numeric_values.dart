@@ -43,6 +43,28 @@ String _removeLeadingZero(double num) {
   return str;
 }
 
+/// Parameters for the cleanupNumericValues plugin.
+class CleanupNumericValuesParams extends PluginParams {
+  /// Decimal places for rounding. Default: 3
+  final int floatPrecision;
+
+  /// Remove leading zeros (0.5 -> .5). Default: true
+  final bool leadingZero;
+
+  /// Remove default 'px' units. Default: true
+  final bool defaultPx;
+
+  /// Convert other absolute units to px if shorter. Default: true
+  final bool convertToPx;
+
+  const CleanupNumericValuesParams({
+    this.floatPrecision = 3,
+    this.leadingZero = true,
+    this.defaultPx = true,
+    this.convertToPx = true,
+  });
+}
+
 /// Rounds numeric values and removes default 'px' units.
 ///
 /// Example input:
@@ -54,31 +76,23 @@ String _removeLeadingZero(double num) {
 /// ```xml
 /// <svg width="100" height="50.123">
 /// ```
-///
-/// Parameters:
-/// - `floatPrecision`: Decimal places for rounding. Default: 3
-/// - `leadingZero`: Remove leading zeros (0.5 -> .5). Default: true
-/// - `defaultPx`: Remove default 'px' units. Default: true
-/// - `convertToPx`: Convert other absolute units to px if shorter. Default: true
-const cleanupNumericValues = Plugin(
+const cleanupNumericValues = Plugin<CleanupNumericValuesParams>(
   name: 'cleanupNumericValues',
   description:
       'rounds numeric values to the fixed precision, removes default "px" units',
-  params: {
-    'floatPrecision': 3,
-    'leadingZero': true,
-    'defaultPx': true,
-    'convertToPx': true,
-  },
+  defaultParams: CleanupNumericValuesParams(),
   fn: _cleanupNumericValuesFn,
 );
 
 Visitor? _cleanupNumericValuesFn(
-    XastRoot ast, PluginParams params, SvgoInfo info) {
-  final floatPrecision = (params['floatPrecision'] as num?)?.toInt() ?? 3;
-  final leadingZero = params['leadingZero'] != false;
-  final defaultPx = params['defaultPx'] != false;
-  final convertToPx = params['convertToPx'] != false;
+  XastRoot ast,
+  CleanupNumericValuesParams params,
+  SvgoInfo info,
+) {
+  final floatPrecision = params.floatPrecision;
+  final leadingZero = params.leadingZero;
+  final defaultPx = params.defaultPx;
+  final convertToPx = params.convertToPx;
 
   return Visitor(
     element: VisitorNode(

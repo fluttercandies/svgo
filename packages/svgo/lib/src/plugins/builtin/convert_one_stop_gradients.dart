@@ -8,15 +8,16 @@ import '../../xast/xast_utils.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
-const convertOneStopGradients = Plugin(
+const convertOneStopGradients = Plugin<EmptyParams>(
   name: 'convertOneStopGradients',
   description: 'converts one-stop (single color) gradients to a plain color',
+  defaultParams: EmptyParams(),
   fn: _convertOneStopGradientsFn,
 );
 
 Visitor? _convertOneStopGradientsFn(
   XastRoot ast,
-  PluginParams params,
+  EmptyParams params,
   SvgoInfo info,
 ) {
   final stylesheet = collectStylesheet(ast);

@@ -26,22 +26,30 @@ const _legacyElements = {
 /// @see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xlink:show#usage_notes
 const _showToTarget = {'new': '_blank', 'replace': '_self'};
 
-const removeXlink = Plugin(
+/// Parameters for the removeXlink plugin.
+class RemoveXlinkParams extends PluginParams {
+  /// Include legacy elements in removal. Default: false
+  final bool includeLegacy;
+
+  const RemoveXlinkParams({
+    this.includeLegacy = false,
+  });
+}
+
+const removeXlink = Plugin<RemoveXlinkParams>(
   name: 'removeXlink',
   description:
       'remove xlink namespace and replaces attributes with the SVG 2 equivalent where applicable',
-  params: {
-    'includeLegacy': false,
-  },
+  defaultParams: RemoveXlinkParams(),
   fn: _removeXlinkFn,
 );
 
 Visitor? _removeXlinkFn(
   XastRoot ast,
-  PluginParams params,
+  RemoveXlinkParams params,
   SvgoInfo info,
 ) {
-  final includeLegacy = params['includeLegacy'] == true;
+  final includeLegacy = params.includeLegacy;
   final xlinkPrefixes = <String>[];
   final overriddenPrefixes = <String>[];
   final usedInLegacyElement = <String>[];

@@ -10,12 +10,20 @@ import '../../xast/xast.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
-const removeDeprecatedAttrs = Plugin(
+/// Parameters for the removeDeprecatedAttrs plugin.
+class RemoveDeprecatedAttrsParams extends PluginParams {
+  /// Remove unsafe deprecated attributes. Default: false
+  final bool removeUnsafe;
+
+  const RemoveDeprecatedAttrsParams({
+    this.removeUnsafe = false,
+  });
+}
+
+const removeDeprecatedAttrs = Plugin<RemoveDeprecatedAttrsParams>(
   name: 'removeDeprecatedAttrs',
   description: 'removes deprecated attributes',
-  params: {
-    'removeUnsafe': false,
-  },
+  defaultParams: RemoveDeprecatedAttrsParams(),
   fn: _removeDeprecatedAttrsFn,
 );
 
@@ -91,10 +99,10 @@ void _processAttributes(
 
 Visitor? _removeDeprecatedAttrsFn(
   XastRoot ast,
-  PluginParams params,
+  RemoveDeprecatedAttrsParams params,
   SvgoInfo info,
 ) {
-  final removeUnsafe = params['removeUnsafe'] == true;
+  final removeUnsafe = params.removeUnsafe;
 
   // Collect stylesheet to check for attribute selectors
   final stylesheet = collectStylesheet(ast);

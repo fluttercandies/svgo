@@ -29,13 +29,14 @@ import '../plugin.dart';
 /// ```xml
 /// <svg>...</svg>
 /// ```
-const removeDoctype = Plugin(
+const removeDoctype = Plugin<EmptyParams>(
   name: 'removeDoctype',
   description: 'removes doctype declaration',
+  defaultParams: EmptyParams(),
   fn: _removeDoctypeFn,
 );
 
-Visitor? _removeDoctypeFn(XastRoot ast, PluginParams params, SvgoInfo info) {
+Visitor? _removeDoctypeFn(XastRoot ast, EmptyParams params, SvgoInfo info) {
   return Visitor(
     doctype: VisitorNode(
       enter: (node, parentNode) {

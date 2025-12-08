@@ -35,7 +35,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  svgo: ^1.0.0
+  svgo: ^1.1.0
 ```
 
 Or run:
@@ -69,21 +69,37 @@ void main() {
 ```dart
 final result = optimize(input, SvgoConfig(
   multipass: true,
-  floatPrecision: 2,
-  plugins: ['preset-default'],
+  plugins: [presetDefault],
 ));
 ```
 
-### Custom Plugins
+### Custom Plugin Selection
 
 ```dart
 final result = optimize(input, SvgoConfig(
   plugins: [
-    'removeComments',
-    {
-      'name': 'cleanupNumericValues',
-      'params': {'floatPrecision': 2},
-    },
+    removeComments,
+    convertColors,
+    cleanupNumericValues,
+  ],
+));
+```
+
+### Plugin with Custom Parameters
+
+```dart
+final result = optimize(input, SvgoConfig(
+  plugins: [
+    removeComments,
+    cleanupNumericValues.withParams(
+      CleanupNumericValuesParams(floatPrecision: 2),
+    ),
+    convertPathData.withParams(
+      ConvertPathDataParams(
+        floatPrecision: 2,
+        makeArcs: MakeArcsConfig(threshold: 2.5),
+      ),
+    ),
   ],
 ));
 ```
@@ -238,26 +254,24 @@ The default preset includes safe optimizations:
 
 ```dart
 final result = optimize(input, SvgoConfig(
-  plugins: ['preset-default'],
+  plugins: [presetDefault],
 ));
 ```
 
-You can override specific plugin settings:
+You can customize specific plugins by combining the preset with custom configurations:
 
 ```dart
 final result = optimize(input, SvgoConfig(
   plugins: [
-    {
-      'name': 'preset-default',
-      'params': {
-        'overrides': {
-          'removeComments': false, // Disable
-          'cleanupNumericValues': {
-            'floatPrecision': 2,
-          },
-        },
-      },
-    },
+    // Use preset minus specific plugins you want to customize
+    removeDoctype,
+    removeXMLProcInst,
+    removeComments,
+    // Custom cleanupNumericValues with specific precision
+    cleanupNumericValues.withParams(
+      CleanupNumericValuesParams(floatPrecision: 2),
+    ),
+    // More plugins...
   ],
 ));
 ```

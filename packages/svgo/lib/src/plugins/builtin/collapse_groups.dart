@@ -30,13 +30,14 @@ import '../plugin.dart';
 ///
 /// References:
 /// - SVG Groups: https://developer.mozilla.org/en-US/docs/Web/SVG/Element/g
-const collapseGroups = Plugin(
+const collapseGroups = Plugin<EmptyParams>(
   name: 'collapseGroups',
   description: 'collapses useless groups',
+  defaultParams: EmptyParams(),
   fn: _collapseGroupsFn,
 );
 
-Visitor? _collapseGroupsFn(XastRoot root, PluginParams params, SvgoInfo info) {
+Visitor? _collapseGroupsFn(XastRoot root, EmptyParams params, SvgoInfo info) {
   final stylesheet = collectStylesheet(root);
 
   return Visitor(

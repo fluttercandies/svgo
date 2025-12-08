@@ -19,10 +19,11 @@
 
 ## 包
 
-| 包 | 描述 | pub.dev |
-|---|------|---------|
-| [svgo](packages/svgo) | 核心 SVGO 库 | [![pub package](https://img.shields.io/pub/v/svgo.svg)](https://pub.dev/packages/svgo) |
-| [svgo_cli](packages/svgo_cli) | 命令行界面 | [![pub package](https://img.shields.io/pub/v/svgo_cli.svg)](https://pub.dev/packages/svgo_cli) |
+| 包                                                 | 描述             | pub.dev                                                                                        |
+|---------------------------------------------------|----------------|------------------------------------------------------------------------------------------------|
+| [svgo](packages/svgo)                             | 核心 SVGO 库      | [![pub package](https://img.shields.io/pub/v/svgo.svg)](https://pub.dev/packages/svgo)         |
+| [svgo_cli](packages/svgo_cli)                     | 命令行界面          | [![pub package](https://img.shields.io/pub/v/svgo_cli.svg)](https://pub.dev/packages/svgo_cli) |
+| [svgo_hooks_example](packages/svgo_hooks_example) | Build hooks 示例 |                                                                                                |
 
 ## 特性
 

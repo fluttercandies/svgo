@@ -20,20 +20,30 @@ class SvgoInfo {
   });
 }
 
-/// Plugin parameter type.
-typedef PluginParams = Map<String, dynamic>;
+/// Base class for all plugin parameters.
+///
+/// Each plugin that requires configuration should define a params class
+/// extending this base class. Plugins without parameters can use [EmptyParams].
+abstract class PluginParams {
+  const PluginParams();
+}
 
-/// Plugin function signature.
+/// Empty parameters for plugins that don't need configuration.
+class EmptyParams extends PluginParams {
+  const EmptyParams();
+}
+
+/// Plugin function signature with generic params type.
 ///
 /// Returns a visitor for traversing the XAST, or null if no traversal needed.
-typedef PluginFn = Visitor? Function(
+typedef PluginFn<P extends PluginParams> = Visitor? Function(
   XastRoot ast,
-  PluginParams params,
+  P params,
   SvgoInfo info,
 );
 
-/// A built-in SVGO plugin.
-class Plugin {
+/// A built-in SVGO plugin with type-safe parameters.
+class Plugin<P extends PluginParams> {
   /// The unique name of this plugin.
   final String name;
 
@@ -41,38 +51,46 @@ class Plugin {
   final String? description;
 
   /// Default parameters for this plugin.
-  final PluginParams? params;
+  final P defaultParams;
 
   /// The plugin function that performs the optimization.
-  final PluginFn fn;
+  final PluginFn<P> fn;
 
   const Plugin({
     required this.name,
     this.description,
-    this.params,
+    required this.defaultParams,
     required this.fn,
   });
 
-  /// Creates a copy of this plugin with merged parameters.
-  Plugin copyWithParams(PluginParams newParams) {
-    return Plugin(
+  /// Creates a copy of this plugin with new parameters.
+  Plugin<P> withParams(P params) {
+    return Plugin<P>(
       name: name,
       description: description,
-      params: {...?params, ...newParams},
+      defaultParams: params,
       fn: fn,
     );
+  }
+
+  /// Invokes this plugin on the given AST.
+  ///
+  /// This method preserves type safety when plugin is stored in a List<Plugin>.
+  Visitor? invoke(XastRoot ast, PluginParams params, SvgoInfo info) {
+    // Cast is safe because we control the params type via defaultParams
+    return fn(ast, params as P, info);
   }
 }
 
 /// A plugin preset containing multiple plugins.
-class PluginPreset extends Plugin {
+class PluginPreset extends Plugin<PresetParams> {
   /// The plugins included in this preset.
   final List<Plugin> plugins;
 
   const PluginPreset({
     required super.name,
     super.description,
-    super.params,
+    required super.defaultParams,
     required this.plugins,
     required super.fn,
   });
@@ -81,58 +99,29 @@ class PluginPreset extends Plugin {
   bool get isPreset => true;
 }
 
-/// Plugin configuration for SVGO.
-///
-/// Can be either:
-/// - A string (plugin name)
-/// - A Plugin instance
-/// - A map with 'name' and optional 'params'
-typedef PluginConfig = Object;
+/// Parameters for plugin presets.
+class PresetParams extends PluginParams {
+  /// Global float precision override.
+  final int? floatPrecision;
 
-/// Resolves a plugin configuration to a Plugin instance.
-///
-/// [config] can be:
-/// - A `String` - the plugin name to look up in [builtinPlugins]
-/// - A `Plugin` instance - used directly
-/// - A `Map` with 'name' key - plugin name with optional params override
-Plugin? resolvePluginConfig(PluginConfig config, List<Plugin> builtinPlugins) {
-  if (config is String) {
-    return builtinPlugins.firstWhere(
-      (p) => p.name == config,
-      orElse: () => throw ArgumentError('Unknown plugin: $config'),
+  /// Per-plugin parameter overrides.
+  /// Key is plugin name, value is either `false` to disable or plugin params.
+  final Map<String, Object?>? overrides;
+
+  const PresetParams({
+    this.floatPrecision,
+    this.overrides,
+  });
+
+  PresetParams copyWith({
+    int? floatPrecision,
+    Map<String, Object?>? overrides,
+  }) {
+    return PresetParams(
+      floatPrecision: floatPrecision ?? this.floatPrecision,
+      overrides: overrides ?? this.overrides,
     );
   }
-
-  if (config is Plugin) {
-    return config;
-  }
-
-  if (config is Map<String, dynamic>) {
-    final name = config['name'] as String?;
-    if (name == null) {
-      throw ArgumentError('Plugin config must have a "name" field');
-    }
-
-    final plugin = builtinPlugins.firstWhere(
-      (p) => p.name == name,
-      orElse: () => throw ArgumentError('Unknown plugin: $name'),
-    );
-
-    final params = config['params'] as Map<String, dynamic>?;
-    if (params != null) {
-      // Create a new plugin with merged params
-      return Plugin(
-        name: plugin.name,
-        description: plugin.description,
-        params: {...?plugin.params, ...params},
-        fn: plugin.fn,
-      );
-    }
-
-    return plugin;
-  }
-
-  throw ArgumentError('Invalid plugin config: $config');
 }
 
 /// Invokes a list of plugins on the AST.
@@ -140,34 +129,47 @@ Plugin? resolvePluginConfig(PluginConfig config, List<Plugin> builtinPlugins) {
 /// [ast] The XAST root node to process.
 /// [info] Information about the SVG.
 /// [plugins] List of plugins to invoke.
-/// [overrides] Per-plugin parameter overrides. Use `false` to disable.
-/// [globalOverrides] Global parameters applied to all plugins.
+/// [globalOverrides] Global parameters like floatPrecision.
 void invokePlugins(
   XastRoot ast,
   SvgoInfo info,
   List<Plugin> plugins, [
-  Map<String, dynamic>? overrides,
+  Map<String, Object?>? pluginOverrides,
   Map<String, dynamic>? globalOverrides,
 ]) {
   for (final plugin in plugins) {
-    final override = overrides?[plugin.name];
+    final override = pluginOverrides?[plugin.name];
 
     // Skip disabled plugins
     if (override == false) continue;
 
-    // Merge parameters
-    final params = <String, dynamic>{
-      ...?plugin.params,
-      ...?globalOverrides,
-      if (override is Map<String, dynamic>) ...override,
-    };
+    // Get the params to use
+    final params = _resolveParams(plugin, override, globalOverrides);
 
-    // Call the plugin function
-    final visitor = plugin.fn(ast, params, info);
+    // Call the plugin function using invoke() for type safety
+    final visitor = plugin.invoke(ast, params, info);
     if (visitor != null) {
       visit(ast, visitor);
     }
   }
+}
+
+/// Resolves the actual params to use for a plugin invocation.
+PluginParams _resolveParams(
+  Plugin plugin,
+  Object? override,
+  Map<String, dynamic>? globalOverrides,
+) {
+  var params = plugin.defaultParams;
+
+  // If override is a PluginParams of correct type, use it
+  if (override != null && override is PluginParams) {
+    params = override;
+  }
+
+  // Apply global overrides for common params (like floatPrecision)
+  // This is handled at a higher level for type safety
+  return params;
 }
 
 /// Creates a plugin preset.
@@ -194,9 +196,10 @@ PluginPreset createPreset({
     name: name,
     description: description,
     plugins: plugins,
+    defaultParams: const PresetParams(),
     fn: (ast, params, info) {
-      final floatPrecision = params['floatPrecision'];
-      final overrides = params['overrides'] as Map<String, dynamic>?;
+      final floatPrecision = params.floatPrecision;
+      final overrides = params.overrides;
 
       final globalOverrides = <String, dynamic>{};
       if (floatPrecision != null) {
@@ -213,8 +216,8 @@ PluginPreset createPreset({
               'part of $name.\n'
               'Try to put it before or after, for example:\n\n'
               'plugins: [\n'
-              '  SvgoConfig.preset("$name"),\n'
-              '  "$pluginName",\n'
+              '  presetDefault,\n'
+              '  $pluginName,\n'
               ']\n',
             );
           }

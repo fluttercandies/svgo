@@ -29,13 +29,14 @@ import '../plugin.dart';
 ///   <style>.a { fill: red; }.b { stroke: blue; }</style>
 /// </svg>
 /// ```
-const mergeStyles = Plugin(
+const mergeStyles = Plugin<EmptyParams>(
   name: 'mergeStyles',
   description: 'merge multiple style elements into one',
+  defaultParams: EmptyParams(),
   fn: _mergeStylesFn,
 );
 
-Visitor? _mergeStylesFn(XastRoot ast, PluginParams params, SvgoInfo info) {
+Visitor? _mergeStylesFn(XastRoot ast, EmptyParams params, SvgoInfo info) {
   XastElement? firstStyleElement;
   var collectedStyles = '';
   var styleContentType = 'text'; // 'text' or 'cdata'

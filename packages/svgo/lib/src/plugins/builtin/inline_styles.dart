@@ -14,6 +14,28 @@ import '../../xast/visitor.dart';
 import '../../xast/xast_utils.dart';
 import '../plugin.dart';
 
+/// Parameters for the inlineStyles plugin.
+class InlineStylesParams extends PluginParams {
+  /// Only inline selectors that match exactly once. Default: true
+  final bool onlyMatchedOnce;
+
+  /// Remove matched selectors from style element. Default: true
+  final bool removeMatchedSelectors;
+
+  /// Media queries to process. Default: ['', 'screen']
+  final List<String> useMqs;
+
+  /// Pseudo-classes to process. Default: ['']
+  final List<String> usePseudos;
+
+  const InlineStylesParams({
+    this.onlyMatchedOnce = true,
+    this.removeMatchedSelectors = true,
+    this.useMqs = const ['', 'screen'],
+    this.usePseudos = const [''],
+  });
+}
+
 /// Merges styles from style elements into inline styles.
 ///
 /// This plugin inlines CSS rules from <style> elements into the
@@ -32,21 +54,10 @@ import '../plugin.dart';
 ///   <rect style="fill:red"/>
 /// </svg>
 /// ```
-///
-/// Parameters:
-/// - `onlyMatchedOnce`: Only inline selectors that match exactly once (default: true)
-/// - `removeMatchedSelectors`: Remove matched selectors from style element (default: true)
-/// - `useMqs`: Media queries to process (default: ['', 'screen'])
-/// - `usePseudos`: Pseudo-classes to process (default: [''])
-const inlineStyles = Plugin(
+const inlineStyles = Plugin<InlineStylesParams>(
   name: 'inlineStyles',
   description: 'inline styles (additional options)',
-  params: {
-    'onlyMatchedOnce': true,
-    'removeMatchedSelectors': true,
-    'useMqs': <String>['', 'screen'],
-    'usePseudos': <String>[''],
-  },
+  defaultParams: InlineStylesParams(),
   fn: _inlineStylesFn,
 );
 
@@ -108,15 +119,13 @@ class _StyleElement {
 
 Visitor? _inlineStylesFn(
   XastRoot ast,
-  PluginParams params,
+  InlineStylesParams params,
   SvgoInfo info,
 ) {
-  final onlyMatchedOnce = params['onlyMatchedOnce'] as bool? ?? true;
-  final removeMatchedSelectors =
-      params['removeMatchedSelectors'] as bool? ?? true;
-  final useMqs = (params['useMqs'] as List?)?.cast<String>() ?? ['', 'screen'];
-  final usePseudos =
-      (params['usePseudos'] as List?)?.cast<String>() ?? <String>[''];
+  final onlyMatchedOnce = params.onlyMatchedOnce;
+  final removeMatchedSelectors = params.removeMatchedSelectors;
+  final useMqs = params.useMqs;
+  final usePseudos = params.usePseudos;
 
   final styleElements = <_StyleElement>[];
   final allRules = <_CssRule>[];

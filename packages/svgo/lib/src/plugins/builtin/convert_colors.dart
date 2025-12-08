@@ -22,6 +22,75 @@ String _convertRgbToHex(List<int> rgb) {
   return '#${hexNumber.toRadixString(16).substring(1).toUpperCase()}';
 }
 
+/// Configuration for currentColor conversion.
+sealed class CurrentColorConfig {
+  const CurrentColorConfig();
+}
+
+/// Disable currentColor conversion.
+class CurrentColorDisabled extends CurrentColorConfig {
+  const CurrentColorDisabled();
+}
+
+/// Convert all non-none colors to currentColor.
+class CurrentColorEnabled extends CurrentColorConfig {
+  const CurrentColorEnabled();
+}
+
+/// Convert only the exact matching color value to currentColor.
+class CurrentColorExact extends CurrentColorConfig {
+  final String value;
+  const CurrentColorExact(this.value);
+}
+
+/// Convert colors matching the pattern to currentColor.
+class CurrentColorPattern extends CurrentColorConfig {
+  final RegExp pattern;
+  const CurrentColorPattern(this.pattern);
+}
+
+/// Hex case conversion options.
+enum ConvertColorsCase {
+  /// Convert to lowercase.
+  lower,
+
+  /// Convert to uppercase.
+  upper,
+
+  /// Don't convert case.
+  none,
+}
+
+/// Parameters for the convertColors plugin.
+class ConvertColorsParams extends PluginParams {
+  /// Convert matching colors to currentColor.
+  final CurrentColorConfig currentColor;
+
+  /// Convert color names to hex. Default: true
+  final bool names2hex;
+
+  /// Convert rgb() to hex. Default: true
+  final bool rgb2hex;
+
+  /// Convert hex case. Default: lower
+  final ConvertColorsCase convertCase;
+
+  /// Convert long hex to short hex. Default: true
+  final bool shorthex;
+
+  /// Convert hex to short color name. Default: true
+  final bool shortname;
+
+  const ConvertColorsParams({
+    this.currentColor = const CurrentColorDisabled(),
+    this.names2hex = true,
+    this.rgb2hex = true,
+    this.convertCase = ConvertColorsCase.lower,
+    this.shorthex = true,
+    this.shortname = true,
+  });
+}
+
 /// Converts colors to shorter formats.
 ///
 /// @see https://www.w3.org/TR/SVG11/types.html#DataTypeColor
@@ -32,35 +101,24 @@ String _convertRgbToHex(List<int> rgb) {
 /// - `rgb(255, 0, 255)` → `#ff00ff` (rgb to hex)
 /// - `#aabbcc` → `#abc` (short hex)
 /// - `#000080` → `navy` (short name)
-///
-/// Parameters:
-/// - `currentColor`: Convert matching colors to currentColor. Default: false
-/// - `names2hex`: Convert color names to hex. Default: true
-/// - `rgb2hex`: Convert rgb() to hex. Default: true
-/// - `convertCase`: Convert hex case: 'lower', 'upper', or false. Default: 'lower'
-/// - `shorthex`: Convert long hex to short hex. Default: true
-/// - `shortname`: Convert hex to short color name. Default: true
-const convertColors = Plugin(
+const convertColors = Plugin<ConvertColorsParams>(
   name: 'convertColors',
   description: 'converts colors: rgb() to #rrggbb and #rrggbb to #rgb',
-  params: {
-    'currentColor': false,
-    'names2hex': true,
-    'rgb2hex': true,
-    'convertCase': 'lower',
-    'shorthex': true,
-    'shortname': true,
-  },
+  defaultParams: ConvertColorsParams(),
   fn: _convertColorsFn,
 );
 
-Visitor? _convertColorsFn(XastRoot ast, PluginParams params, SvgoInfo info) {
-  final currentColor = params['currentColor'];
-  final names2hex = params['names2hex'] != false;
-  final rgb2hex = params['rgb2hex'] != false;
-  final convertCase = params['convertCase'];
-  final shorthex = params['shorthex'] != false;
-  final shortname = params['shortname'] != false;
+Visitor? _convertColorsFn(
+  XastRoot ast,
+  ConvertColorsParams params,
+  SvgoInfo info,
+) {
+  final currentColor = params.currentColor;
+  final names2hex = params.names2hex;
+  final rgb2hex = params.rgb2hex;
+  final convertCase = params.convertCase;
+  final shorthex = params.shorthex;
+  final shortname = params.shortname;
 
   var maskCounter = 0;
 
@@ -77,16 +135,17 @@ Visitor? _convertColorsFn(XastRoot ast, PluginParams params, SvgoInfo info) {
           var val = node.attributes[name]!;
 
           // Convert colors to currentColor
-          if (currentColor != null &&
-              currentColor != false &&
-              maskCounter == 0) {
+          if (currentColor is! CurrentColorDisabled && maskCounter == 0) {
             bool matched;
-            if (currentColor is String) {
-              matched = val == currentColor;
-            } else if (currentColor is RegExp) {
-              matched = currentColor.hasMatch(val);
-            } else {
-              matched = val != 'none';
+            switch (currentColor) {
+              case CurrentColorDisabled():
+                matched = false;
+              case CurrentColorEnabled():
+                matched = val != 'none';
+              case CurrentColorExact(:final value):
+                matched = val == value;
+              case CurrentColorPattern(:final pattern):
+                matched = pattern.hasMatch(val);
             }
             if (matched) {
               val = 'currentColor';
@@ -123,14 +182,16 @@ Visitor? _convertColorsFn(XastRoot ast, PluginParams params, SvgoInfo info) {
           }
 
           // Convert case
-          if (convertCase != null &&
-              convertCase != false &&
+          if (convertCase != ConvertColorsCase.none &&
               !_regUrlRef.hasMatch(val) &&
               val != 'currentColor') {
-            if (convertCase == 'lower') {
-              val = val.toLowerCase();
-            } else if (convertCase == 'upper') {
-              val = val.toUpperCase();
+            switch (convertCase) {
+              case ConvertColorsCase.lower:
+                val = val.toLowerCase();
+              case ConvertColorsCase.upper:
+                val = val.toUpperCase();
+              case ConvertColorsCase.none:
+                break;
             }
           }
 

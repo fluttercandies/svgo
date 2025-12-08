@@ -8,15 +8,16 @@ import '../plugin.dart';
 
 final _rasterImagePattern = RegExp(r'(\.|image/)(jpe?g|png|gif)');
 
-const removeRasterImages = Plugin(
+const removeRasterImages = Plugin<EmptyParams>(
   name: 'removeRasterImages',
   description: 'removes raster images',
+  defaultParams: EmptyParams(),
   fn: _removeRasterImagesFn,
 );
 
 Visitor? _removeRasterImagesFn(
   XastRoot ast,
-  PluginParams params,
+  EmptyParams params,
   SvgoInfo info,
 ) {
   return Visitor(

@@ -8,6 +8,20 @@ import '../../xast/xast_utils.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
+/// Parameters for the removeElementsByAttr plugin.
+class RemoveElementsByAttrParams extends PluginParams {
+  /// IDs of elements to remove.
+  final List<String> id;
+
+  /// Class names of elements to remove.
+  final List<String> className;
+
+  const RemoveElementsByAttrParams({
+    this.id = const [],
+    this.className = const [],
+  });
+}
+
 /// Removes arbitrary elements by ID or className.
 ///
 /// This plugin allows you to remove specific elements from the SVG
@@ -38,35 +52,17 @@ import '../plugin.dart';
 ///     - 'elementClass'
 ///     - 'anotherClass'
 /// ```
-///
-/// Parameters:
-/// - `id`: Single ID string or list of IDs to remove.
-/// - `class`: Single class string or list of classes to remove.
-const removeElementsByAttr = Plugin(
+const removeElementsByAttr = Plugin<RemoveElementsByAttrParams>(
   name: 'removeElementsByAttr',
   description: 'removes arbitrary elements by ID or className',
+  defaultParams: RemoveElementsByAttrParams(),
   fn: _removeElementsByAttrFn,
 );
 
 Visitor? _removeElementsByAttrFn(
-    XastRoot ast, PluginParams params, SvgoInfo info) {
-  // Parse id parameter
-  final idParam = params['id'];
-  final ids = <String>[];
-  if (idParam is String) {
-    ids.add(idParam);
-  } else if (idParam is List) {
-    ids.addAll(idParam.cast<String>());
-  }
-
-  // Parse class parameter
-  final classParam = params['class'];
-  final classes = <String>[];
-  if (classParam is String) {
-    classes.add(classParam);
-  } else if (classParam is List) {
-    classes.addAll(classParam.cast<String>());
-  }
+    XastRoot ast, RemoveElementsByAttrParams params, SvgoInfo info) {
+  final ids = params.id;
+  final classes = params.className;
 
   if (ids.isEmpty && classes.isEmpty) {
     return null;

@@ -10,7 +10,7 @@ void main() {
   <rect/>
 </svg>''';
 
-      final result = optimize(input, SvgoConfig(plugins: ['removeComments']));
+      final result = optimize(input, SvgoConfig(plugins: [removeComments]));
 
       expect(result.data, isNot(contains('<!--')));
       expect(result.data, isNot(contains('-->')));
@@ -23,7 +23,7 @@ void main() {
   <rect/>
 </svg>''';
 
-      final result = optimize(input, SvgoConfig(plugins: ['removeComments']));
+      final result = optimize(input, SvgoConfig(plugins: [removeComments]));
 
       expect(result.data, contains('Copyright'));
     });
@@ -38,10 +38,9 @@ void main() {
       final result = optimize(
           input,
           SvgoConfig(plugins: [
-            {
-              'name': 'removeComments',
-              'params': {'preservePatterns': <String>[]},
-            }
+            removeComments.withParams(
+              RemoveCommentsParams(preservePatterns: []),
+            )
           ]));
 
       expect(result.data, isNot(contains('Copyright')));
@@ -54,7 +53,7 @@ void main() {
           '''<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg xmlns="http://www.w3.org/2000/svg"><rect/></svg>''';
 
-      final result = optimize(input, SvgoConfig(plugins: ['removeDoctype']));
+      final result = optimize(input, SvgoConfig(plugins: [removeDoctype]));
 
       expect(result.data, isNot(contains('<!DOCTYPE')));
     });
@@ -65,8 +64,7 @@ void main() {
       const input = '''<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg"><rect/></svg>''';
 
-      final result =
-          optimize(input, SvgoConfig(plugins: ['removeXMLProcInst']));
+      final result = optimize(input, SvgoConfig(plugins: [removeXMLProcInst]));
 
       expect(result.data, isNot(contains('<?xml')));
     });
@@ -80,7 +78,7 @@ void main() {
   <rect/>
 </svg>''';
 
-      final result = optimize(input, SvgoConfig(plugins: ['removeMetadata']));
+      final result = optimize(input, SvgoConfig(plugins: [removeMetadata]));
 
       expect(result.data, isNot(contains('<metadata>')));
       expect(result.data, isNot(contains('</metadata>')));
@@ -95,7 +93,7 @@ void main() {
   <rect/>
 </svg>''';
 
-      final result = optimize(input, SvgoConfig(plugins: ['removeDesc']));
+      final result = optimize(input, SvgoConfig(plugins: [removeDesc]));
 
       expect(result.data, isNot(contains('<desc>')));
     });
@@ -107,7 +105,7 @@ void main() {
   <rect/>
 </svg>''';
 
-      final result = optimize(input, SvgoConfig(plugins: ['removeDesc']));
+      final result = optimize(input, SvgoConfig(plugins: [removeDesc]));
 
       expect(result.data, isNot(contains('<desc>')));
     });
@@ -122,10 +120,7 @@ void main() {
       final result = optimize(
           input,
           SvgoConfig(plugins: [
-            {
-              'name': 'removeDesc',
-              'params': {'removeAny': false},
-            }
+            removeDesc.withParams(RemoveDescParams(removeAny: false))
           ]));
 
       expect(result.data, contains('<desc>'));
@@ -141,10 +136,7 @@ void main() {
       final result = optimize(
           input,
           SvgoConfig(plugins: [
-            {
-              'name': 'removeDesc',
-              'params': {'removeAny': true},
-            }
+            removeDesc.withParams(RemoveDescParams(removeAny: true))
           ]));
 
       expect(result.data, isNot(contains('<desc>')));
@@ -156,7 +148,7 @@ void main() {
       const input =
           '<svg xmlns="http://www.w3.org/2000/svg"><rect fill="#ff0000"/></svg>';
 
-      final result = optimize(input, SvgoConfig(plugins: ['convertColors']));
+      final result = optimize(input, SvgoConfig(plugins: [convertColors]));
 
       expect(result.data, contains('red'));
       expect(result.data, isNot(contains('#ff0000')));
@@ -166,7 +158,7 @@ void main() {
       const input =
           '<svg xmlns="http://www.w3.org/2000/svg"><rect fill="#aabbcc"/></svg>';
 
-      final result = optimize(input, SvgoConfig(plugins: ['convertColors']));
+      final result = optimize(input, SvgoConfig(plugins: [convertColors]));
 
       expect(result.data, contains('#abc'));
       expect(result.data, isNot(contains('#aabbcc')));
@@ -176,7 +168,7 @@ void main() {
       const input =
           '<svg xmlns="http://www.w3.org/2000/svg"><rect fill="rgb(255, 0, 0)"/></svg>';
 
-      final result = optimize(input, SvgoConfig(plugins: ['convertColors']));
+      final result = optimize(input, SvgoConfig(plugins: [convertColors]));
 
       expect(result.data, contains('red'));
       expect(result.data, isNot(contains('rgb(')));
@@ -189,7 +181,7 @@ void main() {
           '<svg xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="50" rx="25" ry="25"/></svg>';
 
       final result =
-          optimize(input, SvgoConfig(plugins: ['convertEllipseToCircle']));
+          optimize(input, SvgoConfig(plugins: [convertEllipseToCircle]));
 
       expect(result.data, contains('<circle'));
       expect(result.data, contains('r="25"'));
@@ -201,7 +193,7 @@ void main() {
           '<svg xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="50" rx="30" ry="20"/></svg>';
 
       final result =
-          optimize(input, SvgoConfig(plugins: ['convertEllipseToCircle']));
+          optimize(input, SvgoConfig(plugins: [convertEllipseToCircle]));
 
       expect(result.data, contains('<ellipse'));
     });
@@ -216,7 +208,7 @@ void main() {
 </svg>''';
 
       final result =
-          optimize(input, SvgoConfig(plugins: ['removeEmptyContainers']));
+          optimize(input, SvgoConfig(plugins: [removeEmptyContainers]));
 
       expect(result.data, isNot(contains('<g></g>')));
       expect(result.data, isNot(contains('<g/>')));
@@ -230,7 +222,7 @@ void main() {
 </svg>''';
 
       final result =
-          optimize(input, SvgoConfig(plugins: ['removeEmptyContainers']));
+          optimize(input, SvgoConfig(plugins: [removeEmptyContainers]));
 
       expect(result.data, isNot(contains('<defs>')));
     });
@@ -242,7 +234,7 @@ void main() {
 </svg>''';
 
       final result =
-          optimize(input, SvgoConfig(plugins: ['removeEmptyContainers']));
+          optimize(input, SvgoConfig(plugins: [removeEmptyContainers]));
 
       expect(result.data, contains('<g>'));
     });
@@ -253,7 +245,7 @@ void main() {
       const input =
           '<svg xmlns="http://www.w3.org/2000/svg"><rect id="" class=""/></svg>';
 
-      final result = optimize(input, SvgoConfig(plugins: ['removeEmptyAttrs']));
+      final result = optimize(input, SvgoConfig(plugins: [removeEmptyAttrs]));
 
       expect(result.data, isNot(contains('id=""')));
       expect(result.data, isNot(contains('class=""')));
@@ -263,7 +255,7 @@ void main() {
       const input =
           '<svg xmlns="http://www.w3.org/2000/svg"><rect id="myRect"/></svg>';
 
-      final result = optimize(input, SvgoConfig(plugins: ['removeEmptyAttrs']));
+      final result = optimize(input, SvgoConfig(plugins: [removeEmptyAttrs]));
 
       expect(result.data, contains('id="myRect"'));
     });
@@ -277,7 +269,7 @@ void main() {
   <rect/>
 </svg>''';
 
-      final result = optimize(input, SvgoConfig(plugins: ['removeEmptyText']));
+      final result = optimize(input, SvgoConfig(plugins: [removeEmptyText]));
 
       expect(result.data, isNot(contains('<text>')));
     });
@@ -289,7 +281,7 @@ void main() {
   <rect/>
 </svg>''';
 
-      final result = optimize(input, SvgoConfig(plugins: ['removeEmptyText']));
+      final result = optimize(input, SvgoConfig(plugins: [removeEmptyText]));
 
       // The current plugin only removes truly empty elements, not whitespace-only
       expect(result.data, contains('<text>'));
@@ -301,7 +293,7 @@ void main() {
   <text>Hello</text>
 </svg>''';
 
-      final result = optimize(input, SvgoConfig(plugins: ['removeEmptyText']));
+      final result = optimize(input, SvgoConfig(plugins: [removeEmptyText]));
 
       expect(result.data, contains('<text>'));
     });
@@ -313,7 +305,7 @@ void main() {
           '<svg xmlns="http://www.w3.org/2000/svg"><rect x="10.123456789" y="20.987654321"/></svg>';
 
       final result =
-          optimize(input, SvgoConfig(plugins: ['cleanupNumericValues']));
+          optimize(input, SvgoConfig(plugins: [cleanupNumericValues]));
 
       expect(result.data, contains('10.123'));
       expect(result.data, isNot(contains('10.123456789')));
@@ -324,7 +316,7 @@ void main() {
           '<svg xmlns="http://www.w3.org/2000/svg"><rect width="100px" height="50px"/></svg>';
 
       final result =
-          optimize(input, SvgoConfig(plugins: ['cleanupNumericValues']));
+          optimize(input, SvgoConfig(plugins: [cleanupNumericValues]));
 
       expect(result.data, contains('width="100"'));
       expect(result.data, isNot(contains('100px')));
@@ -337,10 +329,9 @@ void main() {
       final result = optimize(
           input,
           SvgoConfig(plugins: [
-            {
-              'name': 'cleanupNumericValues',
-              'params': {'floatPrecision': 1},
-            }
+            cleanupNumericValues.withParams(
+              CleanupNumericValuesParams(floatPrecision: 1),
+            )
           ]));
 
       expect(result.data, contains('10.1'));
@@ -355,7 +346,7 @@ void main() {
 blue"/>
 </svg>''';
 
-      final result = optimize(input, SvgoConfig(plugins: ['cleanupAttrs']));
+      final result = optimize(input, SvgoConfig(plugins: [cleanupAttrs]));
 
       expect(result.data, isNot(contains('\n')));
     });
@@ -364,7 +355,7 @@ blue"/>
       const input =
           '<svg xmlns="http://www.w3.org/2000/svg"><rect fill="red  "/></svg>';
 
-      final result = optimize(input, SvgoConfig(plugins: ['cleanupAttrs']));
+      final result = optimize(input, SvgoConfig(plugins: [cleanupAttrs]));
 
       expect(result.data, contains('fill="red"'));
     });
@@ -375,7 +366,7 @@ blue"/>
       const input =
           '<svg xmlns="http://www.w3.org/2000/svg"><rect z="1" a="2" m="3"/></svg>';
 
-      final result = optimize(input, SvgoConfig(plugins: ['sortAttrs']));
+      final result = optimize(input, SvgoConfig(plugins: [sortAttrs]));
 
       final aIndex = result.data.indexOf('a="2"');
       final mIndex = result.data.indexOf('m="3"');
@@ -395,7 +386,7 @@ blue"/>
   <rect/>
 </svg>''';
 
-      final result = optimize(input, SvgoConfig(plugins: ['removeUnusedNS']));
+      final result = optimize(input, SvgoConfig(plugins: [removeUnusedNS]));
 
       expect(result.data, isNot(contains('xmlns:xlink')));
       expect(result.data, isNot(contains('xmlns:foo')));
@@ -408,7 +399,7 @@ blue"/>
   <use xlink:href="#id"/>
 </svg>''';
 
-      final result = optimize(input, SvgoConfig(plugins: ['removeUnusedNS']));
+      final result = optimize(input, SvgoConfig(plugins: [removeUnusedNS]));
 
       expect(result.data, contains('xmlns:xlink'));
     });
@@ -487,7 +478,14 @@ blue"/>
       const input =
           '<svg xmlns="http://www.w3.org/2000/svg"><rect x="10.123456"/></svg>';
 
-      final result = optimize(input, SvgoConfig(floatPrecision: 1));
+      // Use explicit plugin with custom float precision
+      final result = optimize(
+          input,
+          SvgoConfig(plugins: [
+            cleanupNumericValues.withParams(
+              CleanupNumericValuesParams(floatPrecision: 1),
+            ),
+          ]));
 
       expect(result.data, contains('10.1'));
       expect(result.data, isNot(contains('10.123')));
@@ -528,10 +526,9 @@ blue"/>
       final result = optimize(
           input,
           SvgoConfig(plugins: [
-            {
-              'name': 'cleanupListOfValues',
-              'params': {'floatPrecision': 2},
-            }
+            cleanupListOfValues.withParams(
+              CleanupListOfValuesParams(floatPrecision: 2),
+            )
           ]));
 
       expect(result.data, contains('viewBox='));
@@ -546,10 +543,9 @@ blue"/>
       final result = optimize(
           input,
           SvgoConfig(plugins: [
-            {
-              'name': 'cleanupListOfValues',
-              'params': {'floatPrecision': 1},
-            }
+            cleanupListOfValues.withParams(
+              CleanupListOfValuesParams(floatPrecision: 1),
+            )
           ]));
 
       expect(result.data, isNot(contains('.12345')));
@@ -567,10 +563,9 @@ blue"/>
       final result = optimize(
           input,
           SvgoConfig(plugins: [
-            {
-              'name': 'removeElementsByAttr',
-              'params': {'id': 'remove-me'},
-            }
+            removeElementsByAttr.withParams(
+              RemoveElementsByAttrParams(id: ['remove-me']),
+            )
           ]));
 
       expect(result.data, isNot(contains('remove-me')));
@@ -587,10 +582,9 @@ blue"/>
       final result = optimize(
           input,
           SvgoConfig(plugins: [
-            {
-              'name': 'removeElementsByAttr',
-              'params': {'class': 'delete'},
-            }
+            removeElementsByAttr.withParams(
+              RemoveElementsByAttrParams(className: ['delete']),
+            )
           ]));
 
       expect(result.data, isNot(contains('delete')));
@@ -608,13 +602,16 @@ blue"/>
       final result = optimize(
           input,
           SvgoConfig(plugins: [
-            {
-              'name': 'removeAttributesBySelector',
-              'params': {
-                'selector': '#target',
-                'attributes': 'fill',
-              },
-            }
+            removeAttributesBySelector.withParams(
+              RemoveAttributesBySelectorParams(
+                selectors: [
+                  SelectorAttributesPair(
+                    selector: '#target',
+                    attributes: ['fill'],
+                  ),
+                ],
+              ),
+            )
           ]));
 
       expect(result.data, isNot(contains('fill=')));
@@ -630,13 +627,16 @@ blue"/>
       final result = optimize(
           input,
           SvgoConfig(plugins: [
-            {
-              'name': 'removeAttributesBySelector',
-              'params': {
-                'selector': '.remove',
-                'attributes': ['fill', 'stroke'],
-              },
-            }
+            removeAttributesBySelector.withParams(
+              RemoveAttributesBySelectorParams(
+                selectors: [
+                  SelectorAttributesPair(
+                    selector: '.remove',
+                    attributes: ['fill', 'stroke'],
+                  ),
+                ],
+              ),
+            )
           ]));
 
       expect(result.data, isNot(contains('fill=')));
@@ -653,7 +653,7 @@ blue"/>
 </svg>''';
 
       final result =
-          optimize(input, SvgoConfig(plugins: ['convertStyleToAttrs']));
+          optimize(input, SvgoConfig(plugins: [convertStyleToAttrs]));
 
       expect(result.data, contains('fill="red"'));
       expect(result.data, contains('stroke="blue"'));
@@ -667,7 +667,7 @@ blue"/>
 </svg>''';
 
       final result =
-          optimize(input, SvgoConfig(plugins: ['convertStyleToAttrs']));
+          optimize(input, SvgoConfig(plugins: [convertStyleToAttrs]));
 
       expect(result.data, contains('fill="red"'));
       // display is converted because it's a presentation attribute
@@ -688,7 +688,7 @@ blue"/>
   <rect class="foo"/>
 </svg>''';
 
-      final result = optimize(input, SvgoConfig(plugins: ['minifyStyles']));
+      final result = optimize(input, SvgoConfig(plugins: [minifyStyles]));
 
       // Should not contain excessive whitespace
       expect(result.data, isNot(contains('  fill')));
@@ -700,7 +700,7 @@ blue"/>
   <rect style="fill:   red;   stroke:  blue;  "/>
 </svg>''';
 
-      final result = optimize(input, SvgoConfig(plugins: ['minifyStyles']));
+      final result = optimize(input, SvgoConfig(plugins: [minifyStyles]));
 
       // Should not contain excessive whitespace
       expect(result.data, isNot(contains('   ')));
@@ -712,7 +712,7 @@ blue"/>
   <rect style="fill:#ff0000"/>
 </svg>''';
 
-      final result = optimize(input, SvgoConfig(plugins: ['minifyStyles']));
+      final result = optimize(input, SvgoConfig(plugins: [minifyStyles]));
 
       // #ff0000 should be shortened to #f00
       expect(result.data, contains('#f00'));
@@ -726,7 +726,7 @@ blue"/>
   <path d="M0 0 L10 10" transform="translate(5, 5)"/>
 </svg>''';
 
-      final result = optimize(input, SvgoConfig(plugins: ['applyTransforms']));
+      final result = optimize(input, SvgoConfig(plugins: [applyTransforms]));
 
       // Transform should be removed
       expect(result.data, isNot(contains('transform=')));
@@ -740,7 +740,7 @@ blue"/>
   <path d="M0 0 L10 10" transform="translate(5, 5)" style="fill:red"/>
 </svg>''';
 
-      final result = optimize(input, SvgoConfig(plugins: ['applyTransforms']));
+      final result = optimize(input, SvgoConfig(plugins: [applyTransforms]));
 
       // Transform should be preserved
       expect(result.data, contains('transform='));
@@ -756,7 +756,7 @@ blue"/>
 </svg>''';
 
       final result =
-          optimize(input, SvgoConfig(plugins: ['removeOffCanvasPaths']));
+          optimize(input, SvgoConfig(plugins: [removeOffCanvasPaths]));
 
       // Off-canvas path should be removed
       expect(result.data, isNot(contains('-200')));

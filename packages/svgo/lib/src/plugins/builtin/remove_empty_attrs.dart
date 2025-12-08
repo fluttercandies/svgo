@@ -28,13 +28,14 @@ import '../plugin.dart';
 ///   <rect stroke="black"/>
 /// </svg>
 /// ```
-const removeEmptyAttrs = Plugin(
+const removeEmptyAttrs = Plugin<EmptyParams>(
   name: 'removeEmptyAttrs',
   description: 'removes empty attributes',
+  defaultParams: EmptyParams(),
   fn: _removeEmptyAttrsFn,
 );
 
-Visitor? _removeEmptyAttrsFn(XastRoot ast, PluginParams params, SvgoInfo info) {
+Visitor? _removeEmptyAttrsFn(XastRoot ast, EmptyParams params, SvgoInfo info) {
   return Visitor(
     element: VisitorNode(
       enter: (node, parentNode) {

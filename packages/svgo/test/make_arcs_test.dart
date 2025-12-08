@@ -16,13 +16,12 @@ void main() {
         input,
         SvgoConfig(
           plugins: [
-            {
-              'name': 'convertPathData',
-              'params': {
-                'makeArcs': {'threshold': 2.5, 'tolerance': 0.5},
-                'floatPrecision': 2,
-              },
-            },
+            convertPathData.withParams(
+              ConvertPathDataParams(
+                makeArcs: MakeArcsConfig(threshold: 2.5, tolerance: 0.5),
+                floatPrecision: 2,
+              ),
+            ),
           ],
         ),
       );
@@ -43,13 +42,12 @@ void main() {
         input,
         SvgoConfig(
           plugins: [
-            {
-              'name': 'convertPathData',
-              'params': {
-                'makeArcs': {'threshold': 2.5, 'tolerance': 0.5},
-                'floatPrecision': 3,
-              },
-            },
+            convertPathData.withParams(
+              ConvertPathDataParams(
+                makeArcs: MakeArcsConfig(threshold: 2.5, tolerance: 0.5),
+                floatPrecision: 3,
+              ),
+            ),
           ],
         ),
       );
@@ -71,13 +69,12 @@ void main() {
         input,
         SvgoConfig(
           plugins: [
-            {
-              'name': 'convertPathData',
-              'params': {
-                'makeArcs': {'threshold': 0.1, 'tolerance': 0.1},
-                'floatPrecision': 3,
-              },
-            },
+            convertPathData.withParams(
+              ConvertPathDataParams(
+                makeArcs: MakeArcsConfig(threshold: 0.1, tolerance: 0.1),
+                floatPrecision: 3,
+              ),
+            ),
           ],
         ),
       );
@@ -87,13 +84,12 @@ void main() {
         input,
         SvgoConfig(
           plugins: [
-            {
-              'name': 'convertPathData',
-              'params': {
-                'makeArcs': {'threshold': 5.0, 'tolerance': 2.0},
-                'floatPrecision': 3,
-              },
-            },
+            convertPathData.withParams(
+              ConvertPathDataParams(
+                makeArcs: MakeArcsConfig(threshold: 5.0, tolerance: 2.0),
+                floatPrecision: 3,
+              ),
+            ),
           ],
         ),
       );
@@ -113,7 +109,7 @@ void main() {
       final result = optimize(
         input,
         SvgoConfig(
-          plugins: ['convertPathData'],
+          plugins: [convertPathData],
         ),
       );
 
@@ -132,14 +128,13 @@ void main() {
         input,
         SvgoConfig(
           plugins: [
-            {
-              'name': 'convertPathData',
-              'params': {
-                'makeArcs': {'threshold': 2.5, 'tolerance': 0.5},
-                'smartArcRounding': true,
-                'floatPrecision': 3,
-              },
-            },
+            convertPathData.withParams(
+              ConvertPathDataParams(
+                makeArcs: MakeArcsConfig(threshold: 2.5, tolerance: 0.5),
+                smartArcRounding: true,
+                floatPrecision: 3,
+              ),
+            ),
           ],
         ),
       );
@@ -158,13 +153,12 @@ void main() {
         input,
         SvgoConfig(
           plugins: [
-            {
-              'name': 'convertPathData',
-              'params': {
-                'makeArcs': {'threshold': 2.5, 'tolerance': 0.5},
-                'floatPrecision': 3,
-              },
-            },
+            convertPathData.withParams(
+              ConvertPathDataParams(
+                makeArcs: MakeArcsConfig(threshold: 2.5, tolerance: 0.5),
+                floatPrecision: 3,
+              ),
+            ),
           ],
         ),
       );
@@ -184,13 +178,12 @@ void main() {
         input,
         SvgoConfig(
           plugins: [
-            {
-              'name': 'convertPathData',
-              'params': {
-                'makeArcs': {'threshold': 2.5, 'tolerance': 0.5},
-                'floatPrecision': 2,
-              },
-            },
+            convertPathData.withParams(
+              ConvertPathDataParams(
+                makeArcs: MakeArcsConfig(threshold: 2.5, tolerance: 0.5),
+                floatPrecision: 2,
+              ),
+            ),
           ],
         ),
       );
@@ -212,10 +205,9 @@ void main() {
         input,
         SvgoConfig(
           plugins: [
-            {
-              'name': 'convertPathData',
-              'params': {'straightCurves': true},
-            },
+            convertPathData.withParams(
+              ConvertPathDataParams(straightCurves: true),
+            ),
           ],
         ),
       );
@@ -235,10 +227,9 @@ void main() {
         input,
         SvgoConfig(
           plugins: [
-            {
-              'name': 'convertPathData',
-              'params': {'curveSmoothShorthands': true},
-            },
+            convertPathData.withParams(
+              ConvertPathDataParams(curveSmoothShorthands: true),
+            ),
           ],
         ),
       );
@@ -258,10 +249,9 @@ void main() {
         input,
         SvgoConfig(
           plugins: [
-            {
-              'name': 'convertPathData',
-              'params': {'removeUseless': true},
-            },
+            convertPathData.withParams(
+              ConvertPathDataParams(removeUseless: true),
+            ),
           ],
         ),
       );
@@ -284,7 +274,7 @@ void main() {
       final result = optimize(
         input,
         SvgoConfig(
-          plugins: ['convertPathData'],
+          plugins: [convertPathData],
         ),
       );
 
@@ -302,7 +292,7 @@ void main() {
       final result = optimize(
         input,
         SvgoConfig(
-          plugins: ['convertPathData'],
+          plugins: [convertPathData],
         ),
       );
 
@@ -320,10 +310,9 @@ void main() {
         input,
         SvgoConfig(
           plugins: [
-            {
-              'name': 'convertPathData',
-              'params': {'straightCurves': true},
-            },
+            convertPathData.withParams(
+              ConvertPathDataParams(straightCurves: true),
+            ),
           ],
         ),
       );

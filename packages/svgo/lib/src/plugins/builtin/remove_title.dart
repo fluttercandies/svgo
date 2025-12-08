@@ -28,13 +28,14 @@ import '../plugin.dart';
 ///   <rect/>
 /// </svg>
 /// ```
-const removeTitle = Plugin(
+const removeTitle = Plugin<EmptyParams>(
   name: 'removeTitle',
   description: 'removes <title>',
+  defaultParams: EmptyParams(),
   fn: _removeTitleFn,
 );
 
-Visitor? _removeTitleFn(XastRoot ast, PluginParams params, SvgoInfo info) {
+Visitor? _removeTitleFn(XastRoot ast, EmptyParams params, SvgoInfo info) {
   return Visitor(
     element: VisitorNode(
       enter: (node, parentNode) {

@@ -7,6 +7,27 @@ import '../../xast/xast.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
+/// A selector/attributes pair for the removeAttributesBySelector plugin.
+class SelectorAttributesPair {
+  final String selector;
+  final List<String> attributes;
+
+  const SelectorAttributesPair({
+    required this.selector,
+    required this.attributes,
+  });
+}
+
+/// Parameters for the removeAttributesBySelector plugin.
+class RemoveAttributesBySelectorParams extends PluginParams {
+  /// List of selector/attributes configurations.
+  final List<SelectorAttributesPair> selectors;
+
+  const RemoveAttributesBySelectorParams({
+    this.selectors = const [],
+  });
+}
+
 /// Removes attributes of elements that match a CSS selector.
 ///
 /// This plugin allows you to remove specific attributes from elements
@@ -28,39 +49,18 @@ import '../plugin.dart';
 /// ```xml
 /// <rect x="0" y="0" width="100" height="100" stroke="#00ff00"/>
 /// ```
-///
-/// **Example - Multiple selectors:**
-/// ```yaml
-/// removeAttributesBySelector:
-///   selectors:
-///     - selector: "[fill='#00ff00']"
-///       attributes: 'fill'
-///     - selector: '#remove'
-///       attributes:
-///         - 'stroke'
-///         - 'id'
-/// ```
-///
-/// Parameters:
-/// - `selector`: CSS selector to match elements.
-/// - `attributes`: Attribute(s) to remove (string or list).
-/// - `selectors`: List of selector/attribute configurations.
-const removeAttributesBySelector = Plugin(
+const removeAttributesBySelector = Plugin<RemoveAttributesBySelectorParams>(
   name: 'removeAttributesBySelector',
   description: 'removes attributes of elements that match a css selector',
+  defaultParams: RemoveAttributesBySelectorParams(),
   fn: _removeAttributesBySelectorFn,
 );
 
 Visitor? _removeAttributesBySelectorFn(
-    XastRoot ast, PluginParams params, SvgoInfo info) {
-  // Parse selectors configuration
-  final List<Map<String, dynamic>> selectors;
+    XastRoot ast, RemoveAttributesBySelectorParams params, SvgoInfo info) {
+  final selectors = params.selectors;
 
-  if (params.containsKey('selectors') && params['selectors'] is List) {
-    selectors = (params['selectors'] as List).cast<Map<String, dynamic>>();
-  } else if (params.containsKey('selector')) {
-    selectors = [params];
-  } else {
+  if (selectors.isEmpty) {
     return null;
   }
 
@@ -68,18 +68,8 @@ Visitor? _removeAttributesBySelectorFn(
     element: VisitorNode(
       enter: (node, parentNode) {
         for (final selectorConfig in selectors) {
-          final selector = selectorConfig['selector'] as String?;
-          if (selector == null) continue;
-
-          final attributesParam = selectorConfig['attributes'];
-          final List<String> attributes;
-          if (attributesParam is String) {
-            attributes = [attributesParam];
-          } else if (attributesParam is List) {
-            attributes = attributesParam.cast<String>();
-          } else {
-            continue;
-          }
+          final selector = selectorConfig.selector;
+          final attributes = selectorConfig.attributes;
 
           // Simple selector matching
           if (_matchesSelector(node, selector)) {

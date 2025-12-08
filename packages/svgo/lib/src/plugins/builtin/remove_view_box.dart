@@ -7,15 +7,16 @@ import '../plugin.dart';
 
 const _viewBoxElems = {'pattern', 'svg', 'symbol'};
 
-const removeViewBox = Plugin(
+const removeViewBox = Plugin<EmptyParams>(
   name: 'removeViewBox',
   description: 'removes viewBox attribute when possible',
+  defaultParams: EmptyParams(),
   fn: _removeViewBoxFn,
 );
 
 Visitor? _removeViewBoxFn(
   XastRoot ast,
-  PluginParams params,
+  EmptyParams params,
   SvgoInfo info,
 ) {
   return Visitor(

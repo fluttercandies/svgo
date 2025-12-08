@@ -11,6 +11,16 @@ import '../../xast/xast_utils.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
+/// Parameters for the removeEditorsNSData plugin.
+class RemoveEditorsNSDataParams extends PluginParams {
+  /// Additional namespace URIs to remove.
+  final List<String> additionalNamespaces;
+
+  const RemoveEditorsNSDataParams({
+    this.additionalNamespaces = const [],
+  });
+}
+
 /// Removes editor-specific namespaces, elements, and attributes.
 ///
 /// Removes data added by SVG editors like Adobe Illustrator, Inkscape, etc.
@@ -29,27 +39,19 @@ import '../plugin.dart';
 ///   <path/>
 /// </svg>
 /// ```
-///
-/// Parameters:
-/// - `additionalNamespaces`: Additional namespace URIs to remove.
-const removeEditorsNSData = Plugin(
+const removeEditorsNSData = Plugin<RemoveEditorsNSDataParams>(
   name: 'removeEditorsNSData',
   description: 'removes editors namespaces, elements and attributes',
-  params: {
-    'additionalNamespaces': <String>[],
-  },
+  defaultParams: RemoveEditorsNSDataParams(),
   fn: _removeEditorsNSDataFn,
 );
 
 Visitor? _removeEditorsNSDataFn(
-    XastRoot ast, PluginParams params, SvgoInfo info) {
+    XastRoot ast, RemoveEditorsNSDataParams params, SvgoInfo info) {
   var namespaces = Set<String>.from(editorNamespaces);
 
-  final additionalNamespaces = params['additionalNamespaces'];
-  if (additionalNamespaces is List) {
-    for (final ns in additionalNamespaces) {
-      namespaces.add(ns.toString());
-    }
+  for (final ns in params.additionalNamespaces) {
+    namespaces.add(ns);
   }
 
   final prefixes = <String>[];

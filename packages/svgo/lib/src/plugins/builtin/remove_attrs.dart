@@ -5,31 +5,43 @@ import '../../xast/xast.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
-const removeAttrs = Plugin(
+/// Parameters for the removeAttrs plugin.
+class RemoveAttrsParams extends PluginParams {
+  /// Attributes to remove, can be a single pattern or list of patterns.
+  final List<String> attrs;
+
+  /// Element-attribute separator in patterns. Default: ':'
+  final String elemSeparator;
+
+  /// Preserve currentColor values. Default: false
+  final bool preserveCurrentColor;
+
+  const RemoveAttrsParams({
+    this.attrs = const [],
+    this.elemSeparator = ':',
+    this.preserveCurrentColor = false,
+  });
+}
+
+const removeAttrs = Plugin<RemoveAttrsParams>(
   name: 'removeAttrs',
   description: 'removes specified attributes',
-  params: {
-    'elemSeparator': ':',
-    'preserveCurrentColor': false,
-  },
+  defaultParams: RemoveAttrsParams(),
   fn: _removeAttrsFn,
 );
 
 Visitor? _removeAttrsFn(
   XastRoot ast,
-  PluginParams params,
+  RemoveAttrsParams params,
   SvgoInfo info,
 ) {
-  final attrsParam = params['attrs'];
-  if (attrsParam == null) {
+  final attrs = params.attrs;
+  if (attrs.isEmpty) {
     return null;
   }
 
-  final elemSeparator = (params['elemSeparator'] as String?) ?? ':';
-  final preserveCurrentColor = params['preserveCurrentColor'] == true;
-
-  final attrs =
-      attrsParam is List ? attrsParam.cast<String>() : [attrsParam as String];
+  final elemSeparator = params.elemSeparator;
+  final preserveCurrentColor = params.preserveCurrentColor;
 
   return Visitor(
     element: VisitorNode(

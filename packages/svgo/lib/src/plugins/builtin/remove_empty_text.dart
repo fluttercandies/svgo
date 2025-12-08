@@ -10,6 +10,24 @@ import '../../xast/xast_utils.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
+/// Parameters for the removeEmptyText plugin.
+class RemoveEmptyTextParams extends PluginParams {
+  /// Remove empty `<text>` elements. Default: true
+  final bool text;
+
+  /// Remove empty `<tspan>` elements. Default: true
+  final bool tspan;
+
+  /// Remove `<tref>` with empty xlink:href. Default: true
+  final bool tref;
+
+  const RemoveEmptyTextParams({
+    this.text = true,
+    this.tspan = true,
+    this.tref = true,
+  });
+}
+
 /// Removes empty `<text>`, `<tspan>`, and `<tref>` elements.
 ///
 /// @see https://www.w3.org/TR/SVG11/text.html
@@ -30,26 +48,18 @@ import '../plugin.dart';
 ///   <text>Hello</text>
 /// </svg>
 /// ```
-///
-/// Parameters:
-/// - `text`: Remove empty `<text>` elements. Default: true
-/// - `tspan`: Remove empty `<tspan>` elements. Default: true
-/// - `tref`: Remove `<tref>` with empty xlink:href. Default: true
-const removeEmptyText = Plugin(
+const removeEmptyText = Plugin<RemoveEmptyTextParams>(
   name: 'removeEmptyText',
   description: 'removes empty <text> elements',
-  params: {
-    'text': true,
-    'tspan': true,
-    'tref': true,
-  },
+  defaultParams: RemoveEmptyTextParams(),
   fn: _removeEmptyTextFn,
 );
 
-Visitor? _removeEmptyTextFn(XastRoot ast, PluginParams params, SvgoInfo info) {
-  final removeText = params['text'] != false;
-  final removeTspan = params['tspan'] != false;
-  final removeTref = params['tref'] != false;
+Visitor? _removeEmptyTextFn(
+    XastRoot ast, RemoveEmptyTextParams params, SvgoInfo info) {
+  final removeText = params.text;
+  final removeTspan = params.tspan;
+  final removeTref = params.tref;
 
   return Visitor(
     element: VisitorNode(

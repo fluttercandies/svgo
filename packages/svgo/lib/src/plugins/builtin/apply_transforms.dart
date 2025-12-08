@@ -13,6 +13,20 @@ import '../../xast/xast.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
+/// Parameters for the applyTransforms plugin.
+class ApplyTransformsParams extends PluginParams {
+  /// Precision for transform values. Default: 5
+  final int transformPrecision;
+
+  /// Apply transforms to stroked elements. Default: true
+  final bool applyTransformsStroked;
+
+  const ApplyTransformsParams({
+    this.transformPrecision = 5,
+    this.applyTransformsStroked = true,
+  });
+}
+
 /// Apply transformation(s) to path data.
 ///
 /// This plugin applies transform matrices directly to path coordinates
@@ -26,17 +40,10 @@ import '../plugin.dart';
 /// <!-- After -->
 /// <path d="M10 20 L20 30"/>
 /// ```
-///
-/// Parameters:
-/// - `transformPrecision`: Precision for transform values (default: 5)
-/// - `applyTransformsStroked`: Apply transforms to stroked elements (default: true)
-const applyTransforms = Plugin(
+const applyTransforms = Plugin<ApplyTransformsParams>(
   name: 'applyTransforms',
   description: 'applies transformation to path data',
-  params: {
-    'transformPrecision': 5,
-    'applyTransformsStroked': true,
-  },
+  defaultParams: ApplyTransformsParams(),
   fn: _applyTransformsFn,
 );
 
@@ -44,12 +51,11 @@ final _regNumericValues = RegExp(r'[-+]?(\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?');
 
 Visitor? _applyTransformsFn(
   XastRoot ast,
-  PluginParams params,
+  ApplyTransformsParams params,
   SvgoInfo info,
 ) {
-  final transformPrecision = params['transformPrecision'] as int? ?? 5;
-  final applyTransformsStroked =
-      params['applyTransformsStroked'] as bool? ?? true;
+  final transformPrecision = params.transformPrecision;
+  final applyTransformsStroked = params.applyTransformsStroked;
 
   final stylesheet = collectStylesheet(ast);
 

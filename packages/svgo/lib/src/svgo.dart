@@ -31,11 +31,8 @@ class SvgoConfig {
 
   /// List of plugins to run.
   ///
-  /// Can be plugin names (strings), Plugin instances, or maps with
-  /// 'name' and optional 'params'.
-  ///
-  /// Default: `['preset-default']`
-  final List<Object>? plugins;
+  /// Default: `[presetDefault]`
+  final List<Plugin>? plugins;
 
   /// Enable multipass optimization.
   ///
@@ -65,7 +62,7 @@ class SvgoConfig {
   factory SvgoConfig.defaults() => const SvgoConfig();
 
   /// Creates a config with specific plugins.
-  factory SvgoConfig.withPlugins(List<Object> plugins) =>
+  factory SvgoConfig.withPlugins(List<Plugin> plugins) =>
       SvgoConfig(plugins: plugins);
 
   /// Creates a config with multipass enabled.
@@ -84,60 +81,6 @@ class SvgoOutput {
     required this.data,
     this.ast,
   });
-}
-
-/// Resolves a plugin configuration to a Plugin instance.
-Plugin? _resolvePluginConfig(Object pluginConfig) {
-  if (pluginConfig is String) {
-    // Resolve builtin plugin specified as string
-    final builtinPlugin =
-        builtinPlugins.where((p) => p.name == pluginConfig).firstOrNull;
-    if (builtinPlugin == null) {
-      throw ArgumentError('Unknown builtin plugin "$pluginConfig" specified.');
-    }
-    return builtinPlugin;
-  }
-
-  if (pluginConfig is Plugin) {
-    return pluginConfig;
-  }
-
-  if (pluginConfig is Map<String, dynamic>) {
-    final name = pluginConfig['name'] as String?;
-    if (name == null) {
-      throw ArgumentError('Plugin name must be specified');
-    }
-
-    // Check for custom fn
-    final customFn = pluginConfig['fn'] as PluginFn?;
-    if (customFn != null) {
-      return Plugin(
-        name: name,
-        params: pluginConfig['params'] as Map<String, dynamic>?,
-        fn: customFn,
-      );
-    }
-
-    // Resolve builtin plugin implementation
-    final builtinPlugin =
-        builtinPlugins.where((p) => p.name == name).firstOrNull;
-    if (builtinPlugin == null) {
-      throw ArgumentError('Unknown builtin plugin "$name" specified.');
-    }
-
-    final params = pluginConfig['params'] as Map<String, dynamic>?;
-    if (params != null) {
-      return Plugin(
-        name: name,
-        params: {...?builtinPlugin.params, ...params},
-        fn: builtinPlugin.fn,
-      );
-    }
-
-    return builtinPlugin;
-  }
-
-  return null;
 }
 
 /// Encodes SVG string as a data URI.
@@ -167,7 +110,16 @@ String _encodeSvgDataUri(String svg, DataUriType type) {
 /// // With configuration:
 /// final result = optimize(input, SvgoConfig(
 ///   multipass: true,
-///   plugins: ['preset-default', 'removeViewBox'],
+///   plugins: [presetDefault],
+/// ));
+///
+/// // With custom plugin params:
+/// final result = optimize(input, SvgoConfig(
+///   plugins: [
+///     cleanupNumericValues.withParams(
+///       CleanupNumericValuesParams(floatPrecision: 2),
+///     ),
+///   ],
 /// ));
 /// ```
 ///
@@ -189,10 +141,7 @@ SvgoOutput optimize(String input, [SvgoConfig? config]) {
     );
     final ast = parseSvg(currentInput, config.path);
 
-    final pluginConfigs = config.plugins ?? ['preset-default'];
-
-    final resolvedPlugins =
-        pluginConfigs.map(_resolvePluginConfig).whereType<Plugin>().toList();
+    final resolvedPlugins = config.plugins ?? [presetDefault];
 
     final globalOverrides = <String, dynamic>{};
     if (config.floatPrecision != null) {
@@ -223,9 +172,7 @@ SvgoOutput optimizeWithAst(String input, [SvgoConfig? config]) {
 
   final ast = parseSvg(input, config.path);
 
-  final pluginConfigs = config.plugins ?? ['preset-default'];
-  final resolvedPlugins =
-      pluginConfigs.map(_resolvePluginConfig).whereType<Plugin>().toList();
+  final resolvedPlugins = config.plugins ?? [presetDefault];
 
   final info = SvgoInfo(path: config.path, multipassCount: 0);
 

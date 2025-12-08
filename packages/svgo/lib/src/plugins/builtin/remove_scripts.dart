@@ -7,9 +7,10 @@ import '../../xast/xast_utils.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
-const removeScripts = Plugin(
+const removeScripts = Plugin<EmptyParams>(
   name: 'removeScripts',
   description: 'removes scripts',
+  defaultParams: EmptyParams(),
   fn: _removeScriptsFn,
 );
 
@@ -23,7 +24,7 @@ final _eventAttrs = <String>{
 
 Visitor? _removeScriptsFn(
   XastRoot ast,
-  PluginParams params,
+  EmptyParams params,
   SvgoInfo info,
 ) {
   return Visitor(

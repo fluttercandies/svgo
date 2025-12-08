@@ -8,19 +8,32 @@ import '../../xast/xast_utils.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
+/// Parameters for the removeDesc plugin.
+class RemoveDescParams extends PluginParams {
+  /// Remove all descriptions, not just empty/standard ones.
+  final bool removeAny;
+
+  const RemoveDescParams({
+    this.removeAny = false,
+  });
+
+  /// Creates params that remove all descriptions.
+  const RemoveDescParams.removeAll() : removeAny = true;
+}
+
 /// Removes `<desc>` elements.
 ///
 /// By default, only removes empty descriptions or those with standard editor
 /// content. Enable `removeAny` to remove all descriptions.
-const removeDesc = Plugin(
+const removeDesc = Plugin<RemoveDescParams>(
   name: 'removeDesc',
   description: 'removes <desc>',
-  params: {'removeAny': false},
+  defaultParams: RemoveDescParams(),
   fn: _removeDescFn,
 );
 
-Visitor? _removeDescFn(XastRoot ast, PluginParams params, SvgoInfo info) {
-  final removeAny = params['removeAny'] == true;
+Visitor? _removeDescFn(XastRoot ast, RemoveDescParams params, SvgoInfo info) {
+  final removeAny = params.removeAny;
   final standardDescs = RegExp(r'^(Created with|Created using)');
 
   return Visitor(

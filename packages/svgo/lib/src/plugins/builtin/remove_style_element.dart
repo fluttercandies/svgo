@@ -6,15 +6,16 @@ import '../../xast/xast_utils.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
-const removeStyleElement = Plugin(
+const removeStyleElement = Plugin<EmptyParams>(
   name: 'removeStyleElement',
   description: 'removes <style> element',
+  defaultParams: EmptyParams(),
   fn: _removeStyleElementFn,
 );
 
 Visitor? _removeStyleElementFn(
   XastRoot ast,
-  PluginParams params,
+  EmptyParams params,
   SvgoInfo info,
 ) {
   return Visitor(

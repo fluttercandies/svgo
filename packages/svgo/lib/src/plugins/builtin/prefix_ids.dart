@@ -6,14 +6,32 @@ import '../../xast/xast.dart';
 import '../../xast/visitor.dart';
 import '../plugin.dart';
 
-const prefixIds = Plugin(
+/// Parameters for the prefixIds plugin.
+class PrefixIdsParams extends PluginParams {
+  /// Custom prefix string. If null, uses filename or 'prefix'.
+  final String? prefix;
+
+  /// Delimiter between prefix and original ID. Default: '__'
+  final String delim;
+
+  /// Whether to prefix IDs. Default: true
+  final bool prefixIds;
+
+  /// Whether to prefix class names. Default: true
+  final bool prefixClassNames;
+
+  const PrefixIdsParams({
+    this.prefix,
+    this.delim = '__',
+    this.prefixIds = true,
+    this.prefixClassNames = true,
+  });
+}
+
+const prefixIds = Plugin<PrefixIdsParams>(
   name: 'prefixIds',
   description: 'prefix IDs',
-  params: {
-    'delim': '__',
-    'prefixIds': true,
-    'prefixClassNames': true,
-  },
+  defaultParams: PrefixIdsParams(),
   fn: _prefixIdsFn,
 );
 
@@ -34,10 +52,10 @@ String _generatePrefix(
   String delim,
   String? path,
 ) {
-  if (prefix is String) {
+  if (prefix != null) {
     return '$prefix$delim';
   }
-  if (prefix == null && path != null && path.isNotEmpty) {
+  if (path != null && path.isNotEmpty) {
     return '${_escapeIdentifierName(_getBasename(path))}$delim';
   }
   return 'prefix$delim';
@@ -59,19 +77,15 @@ String? _prefixReference(String prefixStr, String reference) {
 
 Visitor? _prefixIdsFn(
   XastRoot ast,
-  PluginParams params,
+  PrefixIdsParams params,
   SvgoInfo info,
 ) {
-  final delim = (params['delim'] as String?) ?? '__';
-  final prefix = params['prefix'];
-  final doPrefixIds = params['prefixIds'] != false;
-  final doPrefixClassNames = params['prefixClassNames'] != false;
+  final delim = params.delim;
+  final prefix = params.prefix;
+  final doPrefixIds = params.prefixIds;
+  final doPrefixClassNames = params.prefixClassNames;
 
-  final prefixStr = _generatePrefix(
-    prefix is String ? prefix : null,
-    delim,
-    info.path,
-  );
+  final prefixStr = _generatePrefix(prefix, delim, info.path);
 
   return Visitor(
     element: VisitorNode(
@@ -132,7 +146,8 @@ Visitor? _prefixIdsFn(
           final value = node.attributes[name];
           if (value != null && value.isNotEmpty) {
             node.attributes[name] = value.replaceAllMapped(
-              RegExp(r'\burl\((["\x27])?(#.+?)\1\)', caseSensitive: false),
+              RegExp(r"\burl\(([" r"'" r'"])?(\#.+?)\1\)',
+                  caseSensitive: false),
               (match) {
                 final url = match.group(2);
                 if (url != null) {
@@ -194,7 +209,7 @@ String _prefixStyleContent(
 
   // Prefix url(#id) references
   cssText = cssText.replaceAllMapped(
-    RegExp(r"url\(([" "\"'])?#([\\w-]+)\\1\\)", caseSensitive: false),
+    RegExp(r'url\((["\x27])?#([\w-]+)\1\)', caseSensitive: false),
     (match) {
       final quote = match.group(1) ?? '';
       final id = match.group(2)!;
