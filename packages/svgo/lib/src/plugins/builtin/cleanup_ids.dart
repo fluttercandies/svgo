@@ -122,6 +122,8 @@ Visitor? _cleanupIdsFn(
         }
 
         // Collect IDs and references
+        // First pass: collect IDs and check for duplicates
+        String? duplicateId;
         for (final entry in node.attributes.entries) {
           final name = entry.key;
           final value = entry.value;
@@ -129,8 +131,8 @@ Visitor? _cleanupIdsFn(
           if (name == 'id') {
             final id = value;
             if (nodeById.containsKey(id)) {
-              // Remove duplicate ID
-              node.attributes.remove('id');
+              // Mark for removal after iteration
+              duplicateId = 'id';
             } else {
               nodeById[id] = node;
             }
@@ -143,6 +145,11 @@ Visitor? _cleanupIdsFn(
                   );
             }
           }
+        }
+
+        // Remove duplicate ID after iteration to avoid concurrent modification
+        if (duplicateId != null) {
+          node.attributes.remove(duplicateId);
         }
 
         return null;

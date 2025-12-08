@@ -36,7 +36,7 @@
 
 ```yaml
 dependencies:
-  svgo: ^1.0.0
+  svgo: ^1.2.0
 ```
 
 或运行：
@@ -62,7 +62,6 @@ void main() {
 
   final result = optimize(input);
   print(result.data);
-  // 输出: <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="red"/></svg>
 }
 ```
 
@@ -70,22 +69,38 @@ void main() {
 
 ```dart
 final result = optimize(input, SvgoConfig(
-  multipass: true,        // 多遍优化
-  floatPrecision: 2,      // 浮点精度
-  plugins: ['preset-default'],
+  multipass: true,
+  plugins: [presetDefault],
 ));
 ```
 
-### 自定义插件
+### 自定义插件选择
 
 ```dart
 final result = optimize(input, SvgoConfig(
   plugins: [
-    'removeComments',
-    {
-      'name': 'cleanupNumericValues',
-      'params': {'floatPrecision': 2},
-    },
+    removeComments,
+    convertColors,
+    cleanupNumericValues,
+  ],
+));
+```
+
+### 带自定义参数的插件
+
+```dart
+final result = optimize(input, SvgoConfig(
+  plugins: [
+    removeComments,
+    cleanupNumericValues.withParams(
+      CleanupNumericValuesParams(floatPrecision: 2),
+    ),
+    convertPathData.withParams(
+      ConvertPathDataParams(
+        floatPrecision: 2,
+        makeArcs: MakeArcsConfig(threshold: 2.5),
+      ),
+    ),
   ],
 ));
 ```
@@ -240,26 +255,24 @@ final pathString = stringifyPathData(absolute);
 
 ```dart
 final result = optimize(input, SvgoConfig(
-  plugins: ['preset-default'],
+  plugins: [presetDefault],
 ));
 ```
 
-您可以覆盖特定的插件设置：
+您可以通过组合预设和自定义配置来自定义特定插件：
 
 ```dart
 final result = optimize(input, SvgoConfig(
   plugins: [
-    {
-      'name': 'preset-default',
-      'params': {
-        'overrides': {
-          'removeComments': false,  // 禁用
-          'cleanupNumericValues': {
-            'floatPrecision': 2,
-          },
-        },
-      },
-    },
+    // 使用预设减去您想要自定义的特定插件
+    removeDoctype,
+    removeXMLProcInst,
+    removeComments,
+    // 使用特定精度的自定义 cleanupNumericValues
+    cleanupNumericValues.withParams(
+      CleanupNumericValuesParams(floatPrecision: 2),
+    ),
+    // 更多插件...
   ],
 ));
 ```

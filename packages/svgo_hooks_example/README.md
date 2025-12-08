@@ -31,11 +31,11 @@ void main(List<String> args) async {
 
     final svgoConfig = SvgoConfig(
       plugins: [
-        'removeComments',
-        'removeMetadata',
-        'cleanupAttrs',
-        'mergeStyles',
-        'convertColors',
+        removeComments,
+        removeMetadata,
+        cleanupAttrs,
+        mergeStyles,
+        convertColors,
       ],
       multipass: true,
     );
@@ -95,7 +95,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  svgo: ^1.0.0
+  svgo: any
   hooks: ^1.0.0
   path: ^1.8.0
 ```
@@ -154,15 +154,16 @@ You can customize optimization by modifying `SvgoConfig` in `hooks/build.dart`:
 ```dart
 final svgoConfig = SvgoConfig(
   plugins: [
-    'removeComments',
-    {
-      'name': 'cleanupNumericValues',
-      'params': {'floatPrecision': 2},
-    },
+    removeComments,
+    cleanupNumericValues.withParams(
+      CleanupNumericValuesParams(floatPrecision: 2),
+    ),
+    convertPathData.withParams(
+      ConvertPathDataParams(floatPrecision: 3),
+    ),
     // Add custom plugins...
   ],
   multipass: true,
-  floatPrecision: 3,
 );
 ```
 

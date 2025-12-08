@@ -9,8 +9,10 @@ import 'package:glob/list_local_fs.dart';
 import 'package:path/path.dart' as p;
 import 'package:svgo/svgo.dart';
 
+import 'config.dart';
+
 /// Version of the CLI tool.
-const String version = '1.0.0';
+const String version = '1.2.0';
 
 /// Runs the CLI with the given arguments.
 ///
@@ -49,11 +51,36 @@ Future<int> run(List<String> arguments) async {
     return 1;
   }
 
-  // Parse options
+  // Parse CLI options
   final outputDir = results['output'] as String?;
   final quiet = results['quiet'] as bool;
-  final floatPrecision = int.tryParse(results['precision'] as String);
-  final multipass = results['multipass'] as bool;
+  final cliFloatPrecision = int.tryParse(results['precision'] as String);
+  final cliMultipass = results['multipass'] as bool;
+  final configPath = results['config'] as String?;
+  final noConfig = results['no-config'] as bool;
+
+  // Load configuration
+  SvgoFileConfig? fileConfig;
+  if (!noConfig) {
+    if (configPath != null) {
+      // Load from specified config file
+      try {
+        fileConfig = await loadConfigFromFile(configPath);
+        if (!quiet) {
+          print('Using config: $configPath');
+        }
+      } catch (e) {
+        stderr.writeln('Error loading config file: $e');
+        return 1;
+      }
+    } else {
+      // Search for config file
+      fileConfig = await loadConfig();
+      if (fileConfig != null && !quiet) {
+        print('Using config: ${fileConfig.configPath}');
+      }
+    }
+  }
 
   // Collect input files
   final inputFiles = <File>[];
@@ -77,10 +104,12 @@ Future<int> run(List<String> arguments) async {
     return 1;
   }
 
-  // Create SVGO config
-  final config = SvgoConfig(
-    multipass: multipass,
-    floatPrecision: floatPrecision,
+  // Create SVGO config by merging file config with CLI options
+  // CLI options take precedence over file config
+  final config = _mergeConfig(
+    fileConfig: fileConfig,
+    cliMultipass: cliMultipass,
+    cliFloatPrecision: cliFloatPrecision,
   );
 
   // Process files
@@ -134,6 +163,38 @@ Future<int> run(List<String> arguments) async {
   return 0;
 }
 
+/// Merges file configuration with CLI options.
+/// CLI options take precedence over file configuration.
+SvgoConfig _mergeConfig({
+  SvgoFileConfig? fileConfig,
+  bool cliMultipass = false,
+  int? cliFloatPrecision,
+}) {
+  if (fileConfig == null) {
+    return SvgoConfig(
+      multipass: cliMultipass,
+      floatPrecision: cliFloatPrecision,
+    );
+  }
+
+  // Convert file config to SvgoConfig, then override with CLI options
+  final baseConfig = fileConfig.toSvgoConfig();
+
+  // CLI multipass overrides file config if explicitly set
+  final multipass = cliMultipass || baseConfig.multipass;
+
+  // CLI precision overrides file config if explicitly set
+  final floatPrecision = cliFloatPrecision ?? baseConfig.floatPrecision;
+
+  return SvgoConfig(
+    multipass: multipass,
+    floatPrecision: floatPrecision,
+    datauri: baseConfig.datauri,
+    plugins: baseConfig.plugins,
+    js2svg: baseConfig.js2svg,
+  );
+}
+
 /// Builds the argument parser for the CLI.
 ArgParser _buildArgParser() {
   return ArgParser()
@@ -179,6 +240,17 @@ ArgParser _buildArgParser() {
       abbr: 'm',
       negatable: false,
       help: 'Run optimizations multiple times until no more changes.',
+    )
+    ..addOption(
+      'config',
+      abbr: 'c',
+      help: 'Path to config file (svgo.yaml/svgo.yml or pubspec.yaml).',
+      valueHelp: 'FILE',
+    )
+    ..addFlag(
+      'no-config',
+      negatable: false,
+      help: 'Disable loading config from svgo.yaml or pubspec.yaml.',
     );
 }
 
@@ -191,9 +263,16 @@ void _printUsage(ArgParser parser) {
   print('Options:');
   print(parser.usage);
   print('');
+  print('Configuration:');
+  print('  SVGO will automatically search for configuration files in order:');
+  print('  1. svgo.yaml or svgo.yml in current directory or parent directories');
+  print('  2. pubspec.yaml with "svgo:" key in current directory or parent directories');
+  print('');
   print('Examples:');
   print('  svgo input.svg                  Optimize a single file');
   print('  svgo -o dist *.svg              Optimize all SVGs to dist/');
   print('  svgo -m -p 2 icon.svg           Multipass with 2 decimal precision');
   print('  svgo "src/**/*.svg"             Optimize all SVGs recursively');
+  print('  svgo -c custom.yaml input.svg   Use custom config file');
+  print('  svgo --no-config input.svg      Ignore config files');
 }

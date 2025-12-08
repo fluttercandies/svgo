@@ -31,11 +31,11 @@ void main(List<String> args) async {
 
     final svgoConfig = SvgoConfig(
       plugins: [
-        'removeComments',
-        'removeMetadata',
-        'cleanupAttrs',
-        'mergeStyles',
-        'convertColors',
+        removeComments,
+        removeMetadata,
+        cleanupAttrs,
+        mergeStyles,
+        convertColors,
       ],
       multipass: true,
     );
@@ -92,7 +92,7 @@ svgo_hooks_example/
 
 ```yaml
 dependencies:
-  svgo: ^1.0.0
+  svgo: any
   hooks: ^1.0.0
   path: ^1.8.0
 ```

@@ -1,6 +1,7 @@
 import 'dart:io';
-import 'package:svgo/svgo.dart';
+
 import 'package:path/path.dart' as path;
+import 'package:svgo/svgo.dart';
 
 void main() async {
   print('=== Direct SVG Optimization Test ===\n');
@@ -13,25 +14,7 @@ void main() async {
   }
 
   // Configure SVGO optimization options using type-safe plugin API
-  final svgoConfig = SvgoConfig(
-    plugins: [
-      removeComments,
-      removeMetadata,
-      removeEditorsNSData,
-      cleanupAttrs,
-      mergeStyles,
-      inlineStyles,
-      minifyStyles,
-      convertColors,
-      removeEmptyAttrs,
-      removeEmptyContainers,
-      removeHiddenElems,
-      cleanupNumericValues,
-      convertShapeToPath,
-      collapseGroups,
-    ],
-    multipass: true,
-  );
+  final svgoConfig = SvgoConfig(plugins: [presetDefault], multipass: true);
 
   // Find all SVG files
   final svgFiles = assetsDir

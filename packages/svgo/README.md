@@ -35,7 +35,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  svgo: ^1.1.0
+  svgo: ^1.2.0
 ```
 
 Or run:

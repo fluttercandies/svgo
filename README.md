@@ -45,7 +45,7 @@ Add `svgo` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  svgo: ^1.0.0
+  svgo: any
 ```
 
 Then use it in your Dart code:
@@ -97,7 +97,7 @@ svgo -m -p 2 icon.svg
 
 ```dart
 final result = optimize(input, SvgoConfig(
-  plugins: ['preset-default'],
+  plugins: [presetDefault],
 ));
 ```
 
@@ -106,12 +106,11 @@ final result = optimize(input, SvgoConfig(
 ```dart
 final result = optimize(input, SvgoConfig(
   plugins: [
-    'removeComments',
-    'removeMetadata',
-    {
-      'name': 'cleanupNumericValues',
-      'params': {'floatPrecision': 2},
-    },
+    removeComments,
+    removeMetadata,
+    cleanupNumericValues.withParams(
+      CleanupNumericValuesParams(floatPrecision: 2),
+    ),
   ],
 ));
 ```

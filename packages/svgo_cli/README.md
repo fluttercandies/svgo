@@ -65,6 +65,8 @@ svgo --version
 | `--recursive` | `-r` | Process directories recursively |
 | `--precision <NUM>` | `-p` | Float precision (default: 3) |
 | `--multipass` | `-m` | Run optimizations multiple times |
+| `--config <FILE>` | `-c` | Use custom config file |
+| `--no-config` | | Disable automatic config file loading |
 
 ## Examples
 
@@ -96,7 +98,215 @@ svgo -q -o dist *.svg
 
 ## Configuration
 
-The CLI uses the default preset (`preset-default`) with safe optimizations. Future versions will support configuration files for custom plugin settings.
+SVGO CLI supports YAML configuration files for customizing optimization settings.
+
+### Configuration File Discovery
+
+Configuration files are loaded in the following priority order:
+
+1. **Explicit config file** (`--config` flag)
+2. **svgo.yaml** in current directory
+3. **svgo.yml** in current directory
+4. **pubspec.yaml** (reads `svgo:` key)
+
+Use `--no-config` to disable automatic configuration file loading.
+
+### Configuration File Format
+
+Create a `svgo.yaml` file in your project root:
+
+```yaml
+# Float precision for path data
+precision: 3
+
+# Run multiple optimization passes
+multipass: true
+
+# Output formatting
+pretty: false
+indent: 2
+finalNewline: true
+eol: lf  # or 'crlf'
+useShortTags: true
+
+# Plugins configuration
+plugins:
+  # Disable a plugin
+  - name: removeViewBox
+    enabled: false
+  
+  # Enable a plugin with default params
+  - name: removeDimensions
+  
+  # Configure plugin with custom params
+  - name: cleanupNumericValues
+    params:
+      floatPrecision: 3
+      leadingZero: true
+      defaultPx: true
+      convertToPx: true
+  
+  - name: convertColors
+    params:
+      currentColor: true
+      names2hex: true
+      rgb2hex: true
+      convertCase: lower  # or 'upper'
+      shorthex: true
+      shortname: true
+  
+  - name: convertPathData
+    params:
+      applyTransforms: true
+      applyTransformsStroked: true
+      makeArcs:
+        threshold: 2.5
+        tolerance: 0.5
+      straightCurves: true
+      convertToQ: true
+      lineShorthands: true
+      convertToZ: true
+      curveSmoothShorthands: true
+      floatPrecision: 3
+      transformPrecision: 5
+      smartArcRounding: true
+      removeUseless: true
+      collapseRepeated: true
+      utilizeAbsolute: true
+      negativeExtraSpace: true
+      forceAbsolutePath: false
+  
+  - name: cleanupIds
+    params:
+      remove: true
+      minify: true
+      preserve:
+        - id1
+        - id2
+      preservePrefixes:
+        - icon-
+      force: false
+  
+  - name: removeAttrs
+    params:
+      attrs:
+        - fill
+        - stroke
+      elemSeparator: ':'
+      preserveCurrentColor: false
+  
+  - name: addAttributesToSVGElement
+    params:
+      attributes:
+        - xmlns:xlink=http://www.w3.org/1999/xlink
+        - { role: img }
+  
+  - name: inlineStyles
+    params:
+      onlyMatchedOnce: true
+      removeMatchedSelectors: true
+      useMqs:
+        - ""
+        - screen
+      usePseudos:
+        - ""
+  
+  - name: removeUnknownsAndDefaults
+    params:
+      unknownContent: true
+      unknownAttrs: true
+      defaultAttrs: true
+      defaultMarkupDeclarations: true
+      uselessOverrides: true
+      keepDataAttrs: true
+      keepAriaAttrs: true
+      keepRoleAttr: false
+  
+  - name: sortAttrs
+    params:
+      order:
+        - id
+        - width
+        - height
+        - viewBox
+      xmlnsOrder: front  # or 'alphabetical'
+```
+
+### Using pubspec.yaml
+
+You can also add configuration to your `pubspec.yaml`:
+
+```yaml
+name: my_app
+version: 1.0.0
+
+svgo:
+  precision: 3
+  multipass: true
+  plugins:
+    - name: removeViewBox
+      enabled: false
+    - name: cleanupNumericValues
+      params:
+        floatPrecision: 3
+```
+
+### All Available Plugins
+
+| Plugin | Description |
+|--------|-------------|
+| `addAttributesToSVGElement` | Add attributes to the root SVG element |
+| `addClassesToSVGElement` | Add classes to the root SVG element |
+| `cleanupAttrs` | Clean up attribute whitespace |
+| `cleanupEnableBackground` | Remove enable-background attribute |
+| `cleanupIds` | Remove or minify IDs |
+| `cleanupListOfValues` | Clean up list-of-values attributes |
+| `cleanupNumericValues` | Clean up numeric values |
+| `collapseGroups` | Collapse useless groups |
+| `convertColors` | Convert color formats |
+| `convertEllipseToCircle` | Convert ellipse to circle when possible |
+| `convertOneStopGradients` | Convert single-stop gradients |
+| `convertPathData` | Optimize path data |
+| `convertShapeToPath` | Convert shapes to paths |
+| `convertStyleToAttrs` | Convert style to attributes |
+| `convertTransform` | Optimize transforms |
+| `inlineStyles` | Inline CSS styles |
+| `mergePaths` | Merge multiple paths into one |
+| `mergeStyles` | Merge style elements |
+| `minifyStyles` | Minify CSS in style elements |
+| `moveElemsAttrsToGroup` | Move elements' attributes to group |
+| `moveGroupAttrsToElems` | Move group attributes to elements |
+| `prefixIds` | Prefix IDs and references |
+| `removeAttributesBySelector` | Remove attributes by CSS selector |
+| `removeAttrs` | Remove specified attributes |
+| `removeComments` | Remove comments |
+| `removeDesc` | Remove desc elements |
+| `removeDimensions` | Remove width/height, add viewBox |
+| `removeDoctype` | Remove DOCTYPE |
+| `removeEditorsNSData` | Remove editor namespaces |
+| `removeElementsByAttr` | Remove elements by attribute |
+| `removeEmptyAttrs` | Remove empty attributes |
+| `removeEmptyContainers` | Remove empty containers |
+| `removeEmptyText` | Remove empty text elements |
+| `removeHiddenElems` | Remove hidden elements |
+| `removeMetadata` | Remove metadata |
+| `removeNonInheritableGroupAttrs` | Remove non-inheritable group attrs |
+| `removeOffCanvasPaths` | Remove off-canvas paths |
+| `removeRasterImages` | Remove raster images |
+| `removeScripts` | Remove script elements |
+| `removeStyleElement` | Remove style elements |
+| `removeTitle` | Remove title elements |
+| `removeUnknownsAndDefaults` | Remove unknowns and defaults |
+| `removeUnusedNS` | Remove unused namespaces |
+| `removeUselessDefs` | Remove useless defs |
+| `removeUselessStrokeAndFill` | Remove useless stroke/fill |
+| `removeViewBox` | Remove viewBox attribute |
+| `removeXlink` | Remove xlink namespace |
+| `removeXMLNS` | Remove xmlns attribute |
+| `removeXMLProcInst` | Remove XML processing instructions |
+| `reusePaths` | Replace duplicated paths with use |
+| `sortAttrs` | Sort attributes |
+| `sortDefsChildren` | Sort children of defs |
 
 ## Exit Codes
 
