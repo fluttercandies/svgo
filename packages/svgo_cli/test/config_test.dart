@@ -46,7 +46,10 @@ void main() {
     test('creates with params', () {
       final config = PluginConfig(
         name: 'cleanupIds',
-        params: {'minify': false, 'preserve': ['icon-']},
+        params: {
+          'minify': false,
+          'preserve': ['icon-']
+        },
       );
       expect(config.params, isNotNull);
       expect(config.params!['minify'], isFalse);

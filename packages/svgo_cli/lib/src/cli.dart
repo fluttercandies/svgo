@@ -265,8 +265,10 @@ void _printUsage(ArgParser parser) {
   print('');
   print('Configuration:');
   print('  SVGO will automatically search for configuration files in order:');
-  print('  1. svgo.yaml or svgo.yml in current directory or parent directories');
-  print('  2. pubspec.yaml with "svgo:" key in current directory or parent directories');
+  print(
+      '  1. svgo.yaml or svgo.yml in current directory or parent directories');
+  print(
+      '  2. pubspec.yaml with "svgo:" key in current directory or parent directories');
   print('');
   print('Examples:');
   print('  svgo input.svg                  Optimize a single file');
