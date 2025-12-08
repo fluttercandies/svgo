@@ -9,11 +9,6 @@
 </p>
 
 <p align="center">
-  <a href="https://pub.dev/packages/svgo_hooks_example"><img src="https://img.shields.io/pub/v/svgo_hooks_example.svg" alt="pub package"></a>
-  <a href="https://github.com/fluttercandies/svgo/blob/main/LICENSE"><img src="https://img.shields.io/github/license/fluttercandies/svgo" alt="license"></a>
-</p>
-
-<p align="center">
   Demonstration project for automatic SVG optimization using Dart Hooks.
 </p>
 

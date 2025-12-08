@@ -2,6 +2,8 @@
   <img src="https://raw.githubusercontent.com/fluttercandies/svgo/main/svgo.png" alt="SVGO Logo" width="160" height="160">
 </p>
 
+<h1 align="center">SVGO Hooks Example</h1>
+
 <p align="center">
   <a href="README.md">🇺🇸 English</a>
 </p>
@@ -9,8 +11,6 @@
 <p align="center">
   演示如何使用 Dart Hooks 自动优化 SVG 资源的项目。
 </p>
-
-
 
 > **版本说明**: 构建钩子支持在 Dart 3.10 中引入。
 
