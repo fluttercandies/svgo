@@ -1,5 +1,5 @@
 name: svgo
-repository: https://github.com/fluttercandies/svgo-dart
+repository: https://github.com/fluttercandies/svgo
 
 packages:
   - packages/**

@@ -1,9 +1,9 @@
 name: svgo_cli
 description: Command-line interface for SVGO - a tool for optimizing SVG files. Port of the popular Node.js SVGO optimizer.
 version: 1.1.0
-repository: https://github.com/fluttercandies/svgo-dart
-issue_tracker: https://github.com/fluttercandies/svgo-dart/issues
-homepage: https://github.com/fluttercandies/svgo-dart
+repository: https://github.com/fluttercandies/svgo
+issue_tracker: https://github.com/fluttercandies/svgo/issues
+homepage: https://github.com/fluttercandies/svgo
 
 environment:
   sdk: ^3.0.0
